@@ -504,7 +504,7 @@ google_config.)
 	############################
 os_update.)
 	# win Map Drive
-	if [ 1 ]; then
+	if [ ]; then
 		echo "net use T: \\localhost\c$\Users\X\Desktop\totem"
 	fi
 
@@ -565,12 +565,14 @@ os_update.)
 		startx
 	fi
 	
-	# nodejs addons
+	# nodejs and addons
 	# https://nodejs.org
 	if [ 1 ]; then
 		cd $BASE
-		wget "..."
-		tar xvf NODEJS
+		VER=16.13.2
+		wget https://nodejs.org/dist/v$VER/node-v$VER-linux-x64.tar.xz
+		tar xvf node-v$VER-linux-x64.tar.xz
+		ln -s node-v$VER-linux-x64 nodejs
 		npm install -g node-gyp
 		npm install -g forever
 		npm install -g node-red

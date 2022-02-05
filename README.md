@@ -1,7 +1,7 @@
 # FORKED TOTEM
 
 The **Forked TOTEM** installation option offers two installation paths: a barebones `TOTEM module` 
-and full-function `DEBE module`, each of these modules having their own dependencies on other
+and a full-function `DEBE module`, each of these modules having their own dependencies on other
 modules.  Because **Forked TOTEM** installations are intended for development, they require
 various upgrades (compute frameworks, tools, os, etc, etc) to your host (centos) machine.
 
@@ -10,10 +10,11 @@ Thus, after priming your project development folder:
 	git clone https://github.com/totemstan/acmesds
 	bash maint.sh config
 
-you use its `main.sh` script to initialize a `debe` (full-function) or 
+you may use its `maint.sh` script to initialize and start a `debe` (full-function) or 
 a `totem` (barebones) project:
 
 	bash maint.sh [debe || totem] init
+	bash maint.sh [debe || totem] start
 	
 to create your `debe` (full-function) or `totem` (barebones) project, as desired.
 
