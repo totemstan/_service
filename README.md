@@ -73,9 +73,40 @@ where:
 
 ## Usage
 
+## Functions
+
+<dl>
+<dt><a href="#doc">doc(IMAGE, ACTION, DB)</a></dt>
+<dd><p>Federated
+Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
+in accordance with <a href="https://jsdoc.app/">jsdoc</a>.</p>
+</dd>
+<dt><a href="#maint">maint(IMAGE, ACTION, DB)</a></dt>
+<dd><p>Forked
+Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
+in accordance with <a href="https://jsdoc.app/">jsdoc</a>.</p>
+</dd>
+</dl>
+
 <a name="doc"></a>
 
 ## doc(IMAGE, ACTION, DB)
+Federated
+Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
+in accordance with [jsdoc](https://jsdoc.app/).
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| IMAGE | <code>String</code> | Docker image [os, mysql, neo4j, totem, debe, docker] |
+| ACTION | <code>String</code> | Operation to run [install, start, stop, admin, debug, update, prime] |
+| DB | <code>String</code> | Optional path to database during a start ACTION |
+
+<a name="maint"></a>
+
+## maint(IMAGE, ACTION, DB)
+Forked
 Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
 in accordance with [jsdoc](https://jsdoc.app/).
 
