@@ -573,7 +573,8 @@ os_update.)
 		wget https://nodejs.org/dist/v$VER/node-v$VER-linux-x64.tar.xz
 		tar xvf node-v$VER-linux-x64.tar.xz
 		ln -s node-v$VER-linux-x64 nodejs
-		npm install -g node-gyp
+		npm install -g
+		node-gyp
 		npm install -g forever
 		npm install -g node-red
 		npm install -g phantomjs

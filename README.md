@@ -10,14 +10,12 @@ Thus, after priming your project development folder:
 	git clone https://github.com/totemstan/acmesds
 	bash maint.sh config
 
-you may use its `maint.sh` script to initialize and start a `debe` (full-function) or 
-a `totem` (barebones) project:
+you may use its `maint.sh` script:
 
 	bash maint.sh [debe || totem] init
 	bash maint.sh [debe || totem] start
 	
-to create your `debe` (full-function) or `totem` (barebones) project, as desired.
-
+to initialize and start a `debe` (full-function) or a `totem` (barebones) project, as desired.
 
 # FEDERATED TOTEM
 
