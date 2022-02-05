@@ -5,7 +5,7 @@
   "main": "doc.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "redoc": "jsdoc2md --template README.hbs --files doc.js >README.md; git commit -am 'redoc'; git  push agent master"	  
+    "redoc": "jsdoc2md --template README.hbs --files acmesds.js >README.md; git commit -am 'redoc'; git  push agent master"	  
   },
   "repository": {
     "type": "git",
