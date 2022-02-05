@@ -1,5 +1,6 @@
 /**
-Federated
+Federated installation.
+
 Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
 in accordance with [jsdoc]{@link https://jsdoc.app/}.
 
@@ -12,7 +13,8 @@ function doc(IMAGE,ACTION,DB) {
 }
 
 /**
-Forked
+Forked installation.
+
 Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
 in accordance with [jsdoc]{@link https://jsdoc.app/}.
 

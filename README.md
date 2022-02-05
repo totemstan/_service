@@ -77,13 +77,13 @@ where:
 
 <dl>
 <dt><a href="#doc">doc(IMAGE, ACTION, DB)</a></dt>
-<dd><p>Federated
-Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
+<dd><p>Federated installation.</p>
+<p>Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
 in accordance with <a href="https://jsdoc.app/">jsdoc</a>.</p>
 </dd>
 <dt><a href="#maint">maint(IMAGE, ACTION, DB)</a></dt>
-<dd><p>Forked
-Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
+<dd><p>Forked installation.</p>
+<p>Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
 in accordance with <a href="https://jsdoc.app/">jsdoc</a>.</p>
 </dd>
 </dl>
@@ -91,7 +91,8 @@ in accordance with <a href="https://jsdoc.app/">jsdoc</a>.</p>
 <a name="doc"></a>
 
 ## doc(IMAGE, ACTION, DB)
-Federated
+Federated installation.
+
 Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
 in accordance with [jsdoc](https://jsdoc.app/).
 
@@ -106,7 +107,8 @@ in accordance with [jsdoc](https://jsdoc.app/).
 <a name="maint"></a>
 
 ## maint(IMAGE, ACTION, DB)
-Forked
+Forked installation.
+
 Install, startup, and administrate images (TOTEM, database, OS).  This module documented 
 in accordance with [jsdoc](https://jsdoc.app/).
 
