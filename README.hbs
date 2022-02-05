@@ -1,14 +1,42 @@
+# FORKED TOTEM
+
+The **Forked TOTEM** installation option offers two installation paths: a barebones `TOTEM module` 
+and full-function `DEBE module`, each of these modules having their own dependencies on other
+modules.  Because **Forked TOTEM** installations are intended for development, they require
+various upgrades (compute frameworks, tools, os, etc, etc) to your host (centos) machine.
+
+Thus, after priming your project development folder:
+
+	git clone https://github.com/totemstan/acmesds
+	bash maint.sh config
+
+you use its `main.sh` script to initialize a `debe` (full-function) or 
+a `totem` (barebones) project:
+
+	bash maint.sh [debe || totem] init
+	
+to create your `debe` (full-function) or `totem` (barebones) project, as desired.
+
+
 # FEDERATED TOTEM
 
-The **Federated TOTEM** offers the barebones `TOTEM Image` service and the full-function 
-service `DEBE Image` service as [docker images](https://www.docker.com/).  Because 
-*Docker Images* are virtualized machines, service installation, administration,
-security and accreditation are greatly simplified.  Both the
-`TOTEM Image` and the `DEBE Image` services are networked with the `OS Image`, 
-the `MySQL Image`, and (optionally) the `Neo4J Image`: after installation and startup, 
-these images form a `TOTEM-MySQL-Neo4J-OS` or a `DEBE-MySQL-Ne04J-OS` network.
+Two **Federated TOTEM** installation options are available: the `TOTEM-MySQL-Neo4J-OS` (barebones)
+and the `DEBE-MySQL-Neo4J-OS` (full-function), that relying on 4 [docker images](https://www.docker.com/)).
 
-| Docker Image | Network Host | Provides | Requires Host |
+Docker images (being self-contained, virtual machines) streamline the maintenance, delivery, 
+installation, administration, security and accreditation of services.  Indeed, the **Federated TOTEM** 
+option requires only a [docker](https://www.docker.com/)-[git](https://git-scm.com/downloads) 
+enabled host machine (windows/linux).
+
+**Federated TOTEM** installations, like **Forked TOTEM** installations **, come in two 
+flavors: the barebones `TOTEM image` service and the full-function `DEBE image` service,
+each of these images are completely independent of each other [*].  When started, these 
+`TOTEM/DEBE image`s become networked with the `OS/MySQL images` to form either a
+`TOTEM-MySQL-Neo4J-OS` (barebones) or a `DEBE-MySQL-Neo4J-OS` (full-function) network.
+
+The table below summarizes the functions of each image/service:
+
+| Docker image | Network Host | Provides | Requires Host |
 | ----- | ------ | ----------- | -------- |
 | OS  | totemhost | CentOS | none |
 | MySQL | mysqlhost | MySQL database | none |
@@ -16,41 +44,33 @@ these images form a `TOTEM-MySQL-Neo4J-OS` or a `DEBE-MySQL-Ne04J-OS` network.
 | TOTEM | totemhost | Barebones GUI-less web service | mysqlhost |
 | DEBE  | totemhost | Full GUI web service | mysqlhost |
 
-## Installation, Startup and Administration 
+[*] So, whereas the `DEBE image` contains the `DEBE module` and the `TOTEM module`, the 
+`DEBE image` does not require the `TOTEM image` as these images are completely self-contained.
 
-Download the [doc.sh](https://github.com/totemstan/dockify/raw/master/doc.sh) to 
-your Linux system to install, startup and administrate these *Docker Images*:
+Thus, after priming your project folder:
+
+	git clone https://github.com/totemstan/acmesds
+	bash doc.sh config
+
+you may, if necessary:
+
+	bash doc.sh docker install
+	bash doc.sh git install
+
+then:
+
+	bash doc.sh [debe || totem] init
+
+to create the `debe` (full-function) or `totem` (barebones) network, as desired.
+
+Thereafter, the network is administered via:
 
 	bash doc.sh IMAGE ACTION DB
 
-After an *IMAGE* is *install*ed and *start*ed, it can *stop*ped, *admin*istered, 
-*prime*d, *update*d, or *debug*ged.
+where:
 
-Step 1. Install and start [Docker](https://www.docker.com/):
-
-	bash doc.sh docker install
-	bash doc.sh docker start
-
-Step 2. Install **TOTEM** services:
-
-	bash doc.sh os install
-	bash doc.sh mysql install
-	bash doc.sh neo4j install
-	bash doc.sh totem install
-	bash doc.sh debe install
-
-Step 3: Start **TOTEM** databases:
-
-	bash doc.sh mysql start
-	bash doc.sh neo4j start
-
-Step 4. Start your **TOTEM** service:
-
-	bash doc.sh [debe | totem | docker] start
-
-Step 5. Administrate a service:
-
-	bash doc.sh [os | mysql | neo4j | debe | totem | docker] admin
+	IMAGE = totem || debe || os || msql || neo4j
+	ACTION = install || start || stop || admin || prime || update || debug
 
 ## Usage
 

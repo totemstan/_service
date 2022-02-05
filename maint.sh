@@ -5,7 +5,10 @@
 # https://github.com:totemstan/totem/masters/maint.sh
 
 HERE=`pwd`
-MODULES=(totem atomic geohack ocr enums reader debe pipe jsdb man randpr liegroup securelink socketio)
+TOTEM_MODULES=(totem enums jsdb securelink socketio)
+DEBE_MODULES=(${TOTEM_MODULES[@]} debe atomic geohack ocr reader pipe randpr liegroup)
+MODULES=DEBE_MODULES
+# MODULES=(debe totem atomic geohack ocr enums reader pipe jsdb man randpr liegroup securelink socketio)
 MODULE=`basename $HERE`
 SNAPSHOTS=/mnt/snapshots
 
@@ -577,30 +580,29 @@ os_update.)
 	;;
 
 ############################
-# totem data protector
+# totem
 	############################
 totem.)
 	case "$2." in
-		# Install all Totem dependencies
+		# Install Totem and its dependencies
 		install.)
 			mkdir -p $BASE/service; cd $BASE/service
-			for mod in "${MODULES[@]}"; do
+			for mod in "${TOTEM_MODULES[@]}"; do
 				echo "installing $mod"
 				git clone $REPO/$mod
 			done
-			echo "Save your revised account:password keys to config/_pass.sh" 
+			echo "Save revised account:password keys to config/_pass.sh" 
 			vi totem/pass.sh &
 			;;
 
 		# Update all Totem dependencies
-		update.)
-			for mod in "${MODULES[@]}"; do
+		resync.)
+			for mod in "${TOTEM_MODULES[@]}"; do
 				echo "updating $mod"
 				cd $BASE/service/$mod
 				git pull agent master
 			done
 			;;
-
 
 		# Nodejs C bindings to Python,R,opencv,etc
 		rebuild.)
@@ -618,6 +620,46 @@ totem.)
 	;;
 	
 
+############################
+# debe
+	############################
+debe.)
+	case "$2." in
+		# Install Debe and its dependencies
+		install.)
+			mkdir -p $BASE/service; cd $BASE/service
+			for mod in "${DEBE_MODULES[@]}"; do
+				echo "installing $mod"
+				git clone $REPO/$mod
+			done
+			echo "Save revised account:password keys to config/_pass.sh" 
+			vi totem/pass.sh &
+			;;
+
+		# Update all Debe dependencies
+		resync.)
+			for mod in "${DEBE_MODULES[@]}"; do
+				echo "updating $mod"
+				cd $BASE/service/$mod
+				git pull agent master
+			done
+			;;
+
+		# Nodejs C bindings to Python,R,opencv,etc
+		rebuild.)
+			IFS=$BASE/service/atomic/ifs
+			cd $IFS/opencv; $REBUILD
+			cd $IFS/python; $REBUILD
+			cd $IFS/mac; $REBUILD
+			#cd $SRV/jslab
+			#npm install node-svd
+			#cd $SRV/glwip
+			#npm install lwip
+			;;
+
+	esac
+	;;
+	
 ############################
 # pcsc smart card reader
 	# http://ludovic.rousseau.free.fr/softwares/pcsc-tools/

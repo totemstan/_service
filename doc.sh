@@ -24,6 +24,34 @@ hostuser="$(whoami)"
 case "$1_$2." in
 
 #
+# Initialize
+#
+
+totem_init.)
+	bash doc.sh os install
+	bash doc.sh mysql install
+	bash doc.sh neo4j install
+	bash doc.sh totem install
+
+	bash os start
+	bash mysql start
+	bash neo4j start
+	bash totem start
+	;;
+	
+debe_init.)
+	bash doc.sh os install
+	bash doc.sh mysql install
+	bash doc.sh neo4j install
+	bash doc.sh debe install
+
+	bash os start
+	bash mysql start
+	bash neo4j start
+	bash debe start
+	;;
+	
+#
 # totem functions
 #
 
