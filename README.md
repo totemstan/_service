@@ -83,6 +83,11 @@ where
 
 ## Usage
 
+## Program Reference
+<details>
+<summary>
+<i>Open/Close</i>
+</summary>
 ## Functions
 
 <dl>
@@ -130,6 +135,7 @@ in accordance with [jsdoc](https://jsdoc.app/).
 | ACTION | <code>String</code> | Operation to run [install, start, stop, admin, debug, update, prime] |
 | DB | <code>String</code> | Optional path to database during a start ACTION |
 
+</details>
 
 ## Contacting, Contributing, Following
 
