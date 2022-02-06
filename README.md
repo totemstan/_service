@@ -56,27 +56,27 @@ The table below summarizes the functions of each image/service:
 [*] So, whereas the `DEBE image` contains the `DEBE module` and the `TOTEM module`, the 
 `DEBE image` does not require the `TOTEM image` as these images are completely self-contained.
 
-Thus, after priming your project folder:
+Thus, after priming your project folder
 
 	git clone https://github.com/totemstan/acmesds
 	bash doc.sh config
 
-you may, if necessary:
+you may, if necessary
 
 	bash doc.sh docker install
 	bash doc.sh git install
 
-then:
+then
 
 	bash doc.sh [debe || totem] init
 
 to create the `debe` (full-function) or `totem` (barebones) network, as desired.
 
-Thereafter, the network is administered via:
+Thereafter, the network is administered via
 
 	bash doc.sh IMAGE ACTION DB
 
-where:
+where
 
 	IMAGE = totem || debe || os || msql || neo4j
 	ACTION = install || start || stop || admin || prime || update || debug
