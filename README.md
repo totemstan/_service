@@ -81,8 +81,6 @@ where
 	IMAGE = totem || debe || os || msql || neo4j
 	ACTION = install || start || stop || admin || prime || update || debug
 
-## Usage
-
 ## Program Reference
 <details>
 <summary>
