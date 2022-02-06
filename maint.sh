@@ -14,9 +14,66 @@ SNAPSHOTS=/mnt/snapshots
 
 case "$1." in
 
-############################
-# env setup
+flatten.)
 	############################
+	# flatten/expand files for domain xfer
+	############################
+	echo "flattening $2/* -> $2.tar -> $2.hex -> F_$2_xx*"
+	tar cvf $2.tar $2 --exclude=.git
+	xxd -p $2.tar $2.hex
+	split -b 10m $2.hex F_$2_$xx
+	rm $2.tar
+	rm $2.hex
+	#mkdir patches/$2
+	#mv $2_$xx* patches/$2
+	;;
+
+expand.)
+	echo "expanding F_$2_$xx* -> $2.hex -> $2.tar -> $2/*"
+	#cp patches/$2/* .
+	cat F_$2* > $2.hex
+	xxd -r -p $2.hex  $2.tar
+	tar xvf $2.tar
+	rm $2.tar
+	rm $2.hex
+	rm F_$2*
+	;;
+
+config.)
+	############################
+	# env setup
+	############################
+
+	source ./maint.sh base_config
+	source ./maint.sh seclink_config
+	source ./maint.sh jsdb_config
+	source ./maint.sh totem_config $2
+	
+	source ./maint.sh atomic_config
+	source ./maint.sh geohack_config
+	source ./maint.sh debe_config
+	;;
+
+start_dbs.)
+	bash ./maint.sh start_mysql
+	bash ./maint.sh start_neo4j
+	;;
+start_apps.)
+	bash ./maint.sh start_nodered
+	bash ./maint.sh start_cesium
+	bash ./maint.sh start_osm
+	#acroread 			# starts adobe reader for indexing pdfs.  
+	#openoffice4 		# starts openoffice server for indexing docs.  
+	;;
+		
+start.)
+	############################
+	# Starters
+	############################
+	bash maint.sh start_dbs
+	bash maint.sh start_apps
+	bash maint.sh start_docker
+	;;
 
 debe_config.)
 	# specific geonode client
@@ -302,36 +359,26 @@ atomic_config.)
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/protobuf
 	;;
 
-config.)
-	source ./maint.sh base_config
-	source ./maint.sh seclink_config
-	source ./maint.sh jsdb_config
-	source ./maint.sh totem_config $2
-	
-	source ./maint.sh atomic_config
-	source ./maint.sh geohack_config
-	source ./maint.sh debe_config
-	;;
-
-####################
-# opencv
+opencv_install.)
+	####################
+	# opencv
 	# https://opencv.org/releases/
 	# centos 6.x must install opencv-2.x globally (as setting caffe Makefile.config includes/libs does not work):
 	# centos 7.x must install opencv-3.x from downdload (issues w 4.x)
 	# make sure cuda-8.0 installed as opencv defaults to these
 	####################
-opencv_install.)
 	mkdir $OPENCV; cd $OPENCV
 	cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/local/opencv ..
 	make   # may get 2 errors re gpu/cuda support - ignore them - wont use these modules yet
 	sudo make install  # should install w/o errors - likely because it includes its own cuda drivers
 	;;
 
-##############
-# nvidia
+nvidia_install.)
+	##############
+	# nvidia
 	# install gets tricky and not needed if no gpu
 	##############
-nvidia_install.)
+	
 	# .run vers hang so dont download latest .sh nvidia drivers and install
 	# sh cuda_VER.run # run again - this time install only the drivers? - no! instead ...
 	sudo yum clean all
@@ -345,8 +392,9 @@ nvidia_install.)
 	./bandwidthTest	 # insightful info
 	;;
 
-##############
-# cuda install for GPU support (used by opencv, caffe, etc)
+cuda_install.)
+	##############
+	# cuda install for GPU support (used by opencv, caffe, etc)
 	# https://developer.nvidia.com/cuda-11.0-download-archive?target_os=Linux&target_arch=x86_64&target_distro=CentOS&target_version=8&target_type=rpmlocal
 	# https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
 	# cuda-nvidia compatibility: https://developer.nvidia.com/cuda-gpus
@@ -357,7 +405,6 @@ nvidia_install.)
 	# K5000 compatibile with cuda 5.0 +
 	# cuda toolket 11.0.2 contains cuda 8
 	############## 
-cuda_install.)
 	# .run versions typically hang so use the rpm install
 	# sh cuda_VER.run 	# dont install the nvidia drivers - only the toolkit
 	yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -432,160 +479,110 @@ _config.)
 	;;
 	
 
-############################
-# flatten/expand files for domain xfer
-	############################
-flatten.)
-	echo "flattening $2/* -> $2.tar -> $2.hex -> F_$2_xx*"
-	tar cvf $2.tar $2 --exclude=.git
-	xxd -p $2.tar $2.hex
-	split -b 10m $2.hex F_$2_$xx
-	rm $2.tar
-	rm $2.hex
-	#mkdir patches/$2
-	#mv $2_$xx* patches/$2
-	;;
-
-expand.)
-	echo "expanding F_$2_$xx* -> $2.hex -> $2.tar -> $2/*"
-	#cp patches/$2/* .
-	cat F_$2* > $2.hex
-	xxd -r -p $2.hex  $2.tar
-	tar xvf $2.tar
-	rm $2.tar
-	rm $2.hex
-	rm F_$2*
-	;;
-
-############################
-# Starters
-	############################
-start.)
-	case "$2." in
-		dbs.)
-			bash ./maint.sh mysql start
-			bash ./maint.sh neo4j start
-			;;
-
-		apps.)
-			bash ./maint.sh nodered start
-			bash ./maint.sh cesium start
-			bash ./maint.sh osm start
-			#acroread 			# starts adobe reader for indexing pdfs.  
-			#openoffice4 		# starts openoffice server for indexing docs.  
-			;;
-		
-		net.)
-			sudo systemctl stop firewalld	# if running in host os
-			;;
-
-		docker.)		# status and start dependent services
-			bash ./maint.sh docker start
-			;;
-
-		all.)
-			bash ./maint.sh start dbs
-			bash ./maint.sh start apps
-			;;
-	esac
-	;;
-
-############################
-# Google CSE (Custom Search Engine) API key
-		# https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyBp56CJJA0FE5enebW5_4mTssTGaYzGqz8&cx= 017944666033550212559:xrgqwdccet4&q=walmart
-		# key: AIzaSyAIP4VvzppRtiz0MvZ1WxTLG8s_Zw5T2ms
-		# accounts: nowhere stan / nowhere1234 / mepila7915@lege4h.com
-	############################
 google_config.)
+	############################
+	# Google CSE (Custom Search Engine) API key
+	# https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyBp56CJJA0FE5enebW5_4mTssTGaYzGqz8&cx= 017944666033550212559:xrgqwdccet4&q=walmart
+	# key: AIzaSyAIP4VvzppRtiz0MvZ1WxTLG8s_Zw5T2ms
+	# accounts: nowhere stan / nowhere1234 / mepila7915@lege4h.com
+	############################
 	;;
 
-############################
-# CENTOS 7.7 os
-	############################
+install_node_addons.)
+	npm install -g node-gyp
+	npm install -g forever
+	npm install -g node-red
+	npm install -g phantomjs
+	npm install -g @babel/core @babel/cli @babel/preset-env
+	;;
+
+install_node.)
+	# https://nodejs.org
+	cd $BASE
+	VER=16.13.2
+	wget https://nodejs.org/dist/v$VER/node-v$VER-linux-x64.tar.xz
+	tar xvf node-v$VER-linux-x64.tar.xz
+	ln -s node-v$VER-linux-x64 nodejs
+	bash maint.sh install_node_addons
+	;;
+
+install_vnc.)
+	# tiger vnc remote login
+	# DO NOT install VNC if nvidia-GPU drivers installed
+	sudo nvidia-xconfig	# this no longer needed if -noopengl used
+	vi /etc/X11/xorg.conf
+	# add 'Load "glx"' to 'Section "Module"'
+	sudo yum install tigervnc xrdp
+	sudo yum group install "X Window System" "gnome desktop"
+	sudo systemctl enable gdm
+	sudo systemctl set-default graphical.target
+	sudo yum install tigervnc-server
+	sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	sudo systemctl enable xrdp.service
+	vi /etc/systemd/system/vncserver@:1.service
+	# replace 2 <USER> tokens with <account> name
+	# ExecStart = /sbin/runuser -l <account> -c "/usr/bin/vncserver %i -geometry"
+	sudo systemctl start vncserver@:1.service
+
+	vi /etc/xrdp/xrdp.init
+	# ip = 127.0.0.1
+	# port = 5901
+	sudo systemctl start xrdp
+
+	echo -e "\nhald_enable='YES'\ndbus_enable='YES'" | sudo tee -a /etc/rc.conf
+	;;
+
+install_dev.)
+	yum install -y epel-release
+	sudo yum -y update			# bring OS uptodate
+	sudo yum -y groupinstall "Development Tools"
+	sudo yum -y install kernel-devel kernel-headers dkms cmake
+	;;
+
+install_vscode.)
+	# vscode editor
+	# https://code.visualstudio.com/docs/setup/linux
+	sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+	sudo yum install code
+	;;	
+
+install_notepad.)
+	# notepadqq editor
+	# https://www.javatpoint.com/how-to-install-notepadqq-on-centos
+	mkdir $BASE/temp; cd $BASE/temp
+	wget -O /etc/yum.repos.d/sea-devel.repo http://sea.fedorapeople.org/sea-devel.repo
+	yum -y install notepadqq
+	;;
+
+install_desktop.)
+	# gnome desktop
+	yum -y groups install "GNOME Desktop"
+	gsettings set org.gnome.desktop.session idle-delay 0
+	gsettings set org.gnome.desktop.lockdown disable-lock-screen 'true'
+	startx
+	;;
+
 os_update.)
+	############################
+	# CENTOS 7.7 os
+	############################
+
 	# win Map Drive
 	if [ ]; then
 		echo "net use T: \\localhost\c$\Users\X\Desktop\totem"
 	fi
 
-	# os update
-	if [ 1 ]; then
-		yum install -y epel-release
-		sudo yum -y update			# bring OS uptodate
-		sudo yum -y groupinstall "Development Tools"
-		sudo yum -y install kernel-devel kernel-headers dkms cmake
-	fi
-	
-	# tiger vnc remote login
-	# DO NOT install VNC if nvidia-GPU drivers installed
-	if [ ]; then
-		sudo nvidia-xconfig	# this no longer needed if -noopengl used
-		vi /etc/X11/xorg.conf
-		# add 'Load "glx"' to 'Section "Module"'
-		sudo yum install tigervnc xrdp
-		sudo yum group install "X Window System" "gnome desktop"
-		sudo systemctl enable gdm
-		sudo systemctl set-default graphical.target
-		sudo yum install tigervnc-server
-		sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-		sudo systemctl enable xrdp.service
-		vi /etc/systemd/system/vncserver@:1.service
-		# replace 2 <USER> tokens with <account> name
-		# ExecStart = /sbin/runuser -l <account> -c "/usr/bin/vncserver %i -geometry"
-		sudo systemctl start vncserver@:1.service
-
-		vi /etc/xrdp/xrdp.init
-		# ip = 127.0.0.1
-		# port = 5901
-		sudo systemctl start xrdp
-
-		echo -e "\nhald_enable='YES'\ndbus_enable='YES'" | sudo tee -a /etc/rc.conf
-	fi
-
-	# vscode editor
-	# https://code.visualstudio.com/docs/setup/linux
-	if [ 1 ]; then 
-		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-		sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-		sudo yum install code
-	fi
-	
-	# notepadqq editor
-	# https://www.javatpoint.com/how-to-install-notepadqq-on-centos
-	if [ ]; then
-		wget -O /etc/yum.repos.d/sea-devel.repo http://sea.fedorapeople.org/sea-devel.repo
-		yum install notepadqq
-	fi
-
-	# gnome desktop
-	if [ ]; then
-		yum -y groups install "GNOME Desktop"
-		gsettings set org.gnome.desktop.session idle-delay 0
-		gsettings set org.gnome.desktop.lockdown disable-lock-screen 'true'
-		startx
-	fi
-	
-	# nodejs and addons
-	# https://nodejs.org
-	if [ 1 ]; then
-		cd $BASE
-		VER=16.13.2
-		wget https://nodejs.org/dist/v$VER/node-v$VER-linux-x64.tar.xz
-		tar xvf node-v$VER-linux-x64.tar.xz
-		ln -s node-v$VER-linux-x64 nodejs
-		npm install -g
-		node-gyp
-		npm install -g forever
-		npm install -g node-red
-		npm install -g phantomjs
-		npm install -g @babel/core @babel/cli @babel/preset-env
-	fi
+	for mod in dev vscode; do
+		echo "install_${mod}"
+		bash maint.sh install_${mod}
+	done
 	;;
 
-############################
-# totem
-	############################
 totem.)
+	############################
+	# totem
+	############################
 	case "$2." in
 		# Install Totem and its dependencies
 		install.)
@@ -623,10 +620,10 @@ totem.)
 	;;
 	
 
-############################
-# debe
-	############################
 debe.)
+	############################
+	# debe
+	############################
 	case "$2." in
 		# Install Debe and its dependencies
 		install.)
@@ -663,8 +660,10 @@ debe.)
 	esac
 	;;
 	
-############################
-# pcsc smart card reader
+
+pcsc.)
+	############################
+	# pcsc smart card reader
 	# http://ludovic.rousseau.free.fr/softwares/pcsc-tools/
 	# https://www.cac.mil/Common-Access-Card/CAC-Security/
 	# https://cardwerk.com/smart-card-standard-iso7816-4-section-6-basic-interindustry-commands/
@@ -685,7 +684,6 @@ debe.)
 	# https://docs.equinix.com/en-us/Content/Edge-Services/SmartKey/kb/SK-open-ssl.htm
 	# https://manpages.debian.org/testing/opensc/pkcs11-tool.1.en.html
 	############################
-cac.)
 	case "$2." in
 		install.)
 			# enable SCM MicrosoftSystems USB from vmbox
@@ -716,67 +714,65 @@ cac.)
 	esac
 	;;
 
-############################
-# openlayers openstreetmap
+start_osm.)
+	cd $OSM
+	npm start
+	;;
+install_osm.)
+	# Create a new empty directory for your project and navigate to it by running mkdir new-project && cd new-project. Initialize your project with
+	# You will need to have git installed. If you receive an error, make sure that Git is installed on your system.
+	# This will install the ol package, set up a development environment with additional dependencies, and give you an index.html and main.js starting point for your application. By default, Vite will be used as a module loader and bundler. See the create-ol-app documentation for details on using another bundler.
+
+	mkdir -p $OSM; cd $OSM
+	npx create-ol-app
+	;;
+
+osm.)
+	############################
+	# openlayers openstreetmap
 	# https://github.com/openlayers
 	# https://openlayers.org/en/latest/doc/tutorials/bundle.html
 	############################
-osm.)
-	case "$2." in
-		start.)
-			cd $OSM
-			npm start
-			;;
-
-		install.)
-			# Create a new empty directory for your project and navigate to it by running mkdir new-project && cd new-project. Initialize your project with
-			# You will need to have git installed. If you receive an error, make sure that Git is installed on your system.
-			# This will install the ol package, set up a development environment with additional dependencies, and give you an index.html and main.js starting point for your application. By default, Vite will be used as a module loader and bundler. See the create-ol-app documentation for details on using another bundler.
-
-			mkdir -p $OSM; cd $OSM
-			npx create-ol-app
-			;;
-	esac
+	bash maint.sh $2_$1
 	;;
 
-############################
-# neo4j computing
+install_neo4j.)
+	# download latest at https://neo4j.com/download-center/
+	# Extract the contents of the archive, using tar -xf <filename>
+	# Refer to the top-level extracted directory as: NEO4J_HOME
+	#
+	# To create login:  CALL dbms.security.createUser('USER', 'PASSWORD');
+	#
+	# Use need the neo4j-driver nodejs connector (dont use the node-neo4j connector).
+	# Note neo4j 3.x needs java SE 8 installed, whereas neo4j 4.x needs SE 11.
+	# To update 8 to 11 see https://sysadminxpert.com/steps-to-upgrade-java-8-to-java-11-on-centos-7/
+	# or get standalone 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html
+
+	mkdir -p $NEO4J; cd $NEO4J
+	VER=3.5.15
+	wget https://neo4j.com/artifact.php?name=neo4j-community-$VER-unix.tar.gz
+	;;
+start_neo4j.)
+	$NEO4J/bin/neo4j console &
+	;;
+
+neo4j.)
+	############################
+	# neo4j computing
 	# https://neo4j.com/docs/operations-manual/current/installation/linux/
 	# https://www.oracle.com/java/technologies/downloads/
 	# https://www.oracle.com/java/technologies/downloads/archive/
 	# https://neo4j.com/developer/docker-run-neo4j/
 	############################
-neo4j.)
-	case "$2." in
-		install.)
-			# download latest at https://neo4j.com/download-center/
-			# Extract the contents of the archive, using tar -xf <filename>
-			# Refer to the top-level extracted directory as: NEO4J_HOME
-			#
-			# To create login:  CALL dbms.security.createUser('USER', 'PASSWORD');
-			#
-			# Use need the neo4j-driver nodejs connector (dont use the node-neo4j connector).
-			# Note neo4j 3.x needs java SE 8 installed, whereas neo4j 4.x needs SE 11.
-			# To update 8 to 11 see https://sysadminxpert.com/steps-to-upgrade-java-8-to-java-11-on-centos-7/
-			# or get standalone 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html
-
-			mkdir -p $NEO4J; cd $NEO4J
-			VER=3.5.15
-			wget https://neo4j.com/artifact.php?name=neo4j-community-$VER-unix.tar.gz
-			;;
-
-		start.)
-			$NEO4J/bin/neo4j console &
-			;;
-
-	esac
+	bash maint.sh $2_$1
 	;;
 
-#################
-# caffe install
+caffe.)
+	#################
+	# caffe install
 	# https://caffe.berkeleyvision.org/install_yum.html
 	#################
-caffe.)
+	
 	# install caffe dependencies
 	sudo yum install atlas-devel protobuf-devel leveldb-devel snappy-devel boost-devel hdf5-devel gflags-devel glog-devel lmdb-devel python-devel
 	# sudo yum install blas-devel	# blas install centos 6.x only
@@ -785,9 +781,12 @@ caffe.)
 	# so caffe install in NEW TERMINAL - python 2.7? 
 	# may have to uninstall conda protobuf etc
 
+	cd $BASE
+	# need a wget here
 	unzip caffe-master
 	mv caffe-master caffe
-	cd caffe
+	
+	cd $CAFFE
 	cp Makefile.config.example Makefile.config
 	vi Makefile.config  &
 	echo adjust ...\
@@ -820,7 +819,7 @@ caffe.)
 	# note during the make, INCLUDE_DIRS should look something like /local/atlas/include:/local/anaconda/bin:/local/include/python:/local/oxygen/bin:/opt/cmake:/local/anaconda/bin:/local/include/python:/local/oxygen/bin:/opt/cmake:/local/mysql/bin:/local/bin:/usr/bin:/local/sbin:/usr/sbin:/usr/local/share/gems/gems/jsduck-5.3.4/bin:/local/nodejs/bin:/local/include/opencv:/local/opencv/bin:/local/nodejs/bin:/local/include/opencv:/local/opencv/bin
 
 	# python interface
-	cd /local/caffe
+	cd $CAFFE
 	make pycaffe
 
 	# we need python protobuf too (undocumented reqt)
@@ -832,10 +831,11 @@ caffe.)
 	for req in $(cat requirements.txt); do pip install $req; done    # some errors are generated
 	;;
 
-############################
-# R computing
+install_R.)
 	############################
-R_install.)
+	# R computing
+	############################
+
 	# R packages are available in the EPEL repositories. 
 	# If you don’t have EPEL repository installed on your machine you can do it by typing:
 	# sudo -y yum install epel-release
@@ -848,55 +848,60 @@ R_install.)
 	R --version
 	;;
 
-############################
-# conda computing
+install_conda.)
+	mkdir -p $CONDA; cd $CONDA
+	VER=3-2020.11
+	# bash Anaconda$VER-Linux-x86_64.sh -b -p /local/anaconda3-2020.11
+
+	echo "Install under $CONDA"
+	sh Anaconda$VER-Linux-x86_64.sh
+	rm Anaconda$VER-Linux-x86_64.sh
+	ln -s anaconda anaconda-$VER
+	conda init   # post install init
+	;;
+	
+install_conda_addons.)
+	conda install -c plotly plotly  # install plotly etc packages
+	conda install -c anaconda mysql-connector-python	# install python connector
+	conda install -c anaconda mysql-connector-python 
+	conda install -c anaconda numpy
+	conda install -c anaconda pillow 
+	pip install pyminifier # --index-url= ..... (see gitadv)
+	
+	##### install spacy
+	# installs: socketIO-client requests six websocket-client idna certifi chardet urllib3
+	python -m pip install -U socketIO-client
+
+	#### smop matlab to python compiler
+	mkdir -p $BASE; cd $BASE
+	# need wget here
+	unzip smop-master
+	cd smop-master
+	python setup.py install --user
+	cd smop
+	python main.py smop solver.m
+	;;
+start_conda.)
+	$CONDA/bin/jupyter-notebook --ip 0.0.0.0 --port 8081
+	;;
+
+conda.)
+	############################
+	# conda computing
 	# https://www.anaconda.com/products/individual
 	# https://docs.anaconda.com/anaconda/install/linux/
 	# https://repo.anaconda.com/archive/
 	############################
-conda.)
 	case "$2." in
 		install.)
-			mkdir $CONDA; cd $CONDA
-			VER=3-2020.11
-			# bash Anaconda$VER-Linux-x86_64.sh -b -p /local/anaconda3-2020.11
-
-			echo "Install under $CONDA"
-			sh Anaconda$VER-Linux-x86_64.sh
-			conda init   # post install init
-			
-			conda install -c plotly plotly  # install plotly etc packages
-			conda install -c anaconda mysql-connector-python	# install python connector
-			conda install -c anaconda mysql-connector-python 
-			conda install -c anaconda numpy
-			conda install -c anaconda pillow 
-			pip install pyminifier # --index-url= ..... (see gitadv)
-
-			rm Anaconda$ver-Linux-x86_64.sh
-			ln -s anaconda anaconda-$VER
-			;;
-
-		update.)
-			##### install spacy
-			if [ 1 ]; then
-				python -m pip install -U socketIO-client
-				# installs: socketIO-client requests six websocket-client idna certifi chardet urllib3
-			fi
-
-			#### smop matlab to python compiler
-			if [ ]; then
-				# download smop-master.zip
-				unzip smop-master
-				cd smop-master
-				python setup.py install --user
-				# to test
-				cd smop
-				python main.py smop solver.m
-			fi
+			for mod in conda conda_addons; do
+				echo "install_${mod}"
+				bash maint.sh install_${mod}
+			done
 			;;
 
 		start.)
-			$CONDA/bin/jupyter-notebook --ip 0.0.0.0 --port 8081
+			bash maint.sh $2_$1
 			;;
 	esac
 	;;
@@ -919,54 +924,74 @@ readme.)
 	;;
 	
 
-############################
-# mysql database
+install_mysql.)	
+	# need wget here
+	cd $BASE
+	VER=7.6.12
+	tar xvf MYSQL-$VER # cluster (7.3.6, 7.4.8, 7.5.5) from generic linux install package (not the .el versions)
+	ln -s MYSQL-$VER  mysql
+	;;
+	
+install_mysql_fixups.)
+	# add missing english errmsg.sys
+	cd $MYSQL
+	mkdir bin/share
+	cp share/english/errmsg.sys bin/share
+	cp share/english/errmsg.sys share/
+
+	# revise my.cnf as follows
+	vi my.cnf  # add following
+	[mysqld_safe]
+	datadir=/local/sqldb
+	basedir=/local/mysql
+	socket=/tmp/mysql.sock
+	symbolic-links=0
+	log-error=/local/sqldb/mysqld.log
+	pid-file=/local/sqldb/mysqld.pid
+	sql-mode= 
+	max_allowed_packet=64000000
+
+	# create / initialize the sqldb 
+	./bin/mysqld --initialize-insecure --user=mysql  --basedir=/local/mysql --datadir=/local/sqldb
+	./bin/mysqld_safe --defaults-file=my.cnf &
+	./bin/mysql -u root --skip-password
+	alter user "root"@"localhost" identified by "ROOTPASS"; # instead of using mysqladmin
+	set global sql_mode = "";  # if preferred over mysql_safe startup 
+	;;
+	
+install_mysql_prime.)
+	# start the mysql
+	./bin/mysqld_safe --defaults-file=my.cnf &
+
+	# prime the database ...
+	mysql -uroot -pROOTPASS
+	create database openv;
+	create database app;
+	exit		
+	;;
+	
+start_mysql.)
+	if P=$(pgrep mysqld); then
+		echo -e "mysql service running: \n$P"
+	else
+		#rm /var/lib/mysql/mysql.sock      # in case its hanging around
+		rm /tmp/mysql.sock.lock
+		$MYSQL/bin/mysqld_safe --defaults-file=$MYSQL/my.cnf --sql-mode="" --max_allowed_packet=64000000 &
+	fi
+	;;
+mysql.)
+	############################
+	# mysql database
 	# https://dev.mysql.com/downloads/cluster/
 	# https://dev.mysql.com/doc/refman/5.7/en/data-directory-initialization.html
 	############################
-mysql.)
+	bash maint.sh "$2_$1"
 	case "$2." in
 		install.)
-
-			tar xvf MYSQL # cluster (7.3.6, 7.4.8, 7.5.5) from generic linux install package (not the .el versions)
-			ln -s MYSQL  mysql
-
-			# add missing english errmsg.sys
-			cd mysql
-			mkdir bin/share
-			cp share/english/errmsg.sys bin/share
-			cp share/english/errmsg.sys share/
-
-
-			# revise my.cnf as follows
-			cd mysql
-			vi my.cnf  # add following
-			[mysqld_safe]
-			datadir=/local/sqldb
-			basedir=/local/mysql
-			socket=/tmp/mysql.sock
-			symbolic-links=0
-			log-error=/local/sqldb/mysqld.log
-			pid-file=/local/sqldb/mysqld.pid
-			sql-mode= 
-			max_allowed_packet=64000000
-
-			# create / initialize the sqldb 
-			cd mysql
-			./bin/mysqld --initialize-insecure --user=mysql  --basedir=/local/mysql --datadir=/local/sqldb
-			./bin/mysqld_safe --defaults-file=my.cnf &
-			./bin/mysql -u root --skip-password
-			alter user "root"@"localhost" identified by "ROOTPASS"; # instead of using mysqladmin
-			set global sql_mode = "";  # if preferred over mysql_safe startup 
-
-			# start the mysql
-			./bin/mysqld_safe --defaults-file=my.cnf &
-
-			# prime the database ...
-			mysql -uroot -pROOTPASS
-			create database openv;
-			create database app;
-			exit		
+			for mod in mysql mysql_fixups mysql_prime; do
+				echo "install ${mod}"
+				bash maint.sh install_${mod}
+			done
 			;;
 			
 		config.)	# tune dbs
@@ -987,21 +1012,15 @@ mysql.)
 			;;
 
 		start.)
-			if P=$(pgrep mysqld); then
-				echo -e "mysql service running: \n$P"
-			else
-				#rm /var/lib/mysql/mysql.sock      # in case its hanging around
-				rm /tmp/mysql.sock.lock
-				$MYSQL/bin/mysqld_safe --defaults-file=$MYSQL/my.cnf --sql-mode="" --max_allowed_packet=64000000 &
-			fi
+			bash maint.sh start mysql
 			;;
 	esac
 	;;
 
-############################
-# Archival
-	############################
 snap.)
+	############################
+	# Archival
+	############################
 	case "$2." in
 		db.)
 			mysqldump -u$MYSQL_USER -p$MYSQL_PASS -h$MYSQL_HOST openv >$SNAPSHOTS/sqldbs/openv.sql
@@ -1046,38 +1065,67 @@ snap.)
 	esac
 	;;
 
-############################
-# cesium
-	############################
+install_cesium.)
+	;;
+
+start_cesium.)
+	if P=$(pgrep cesium); then
+		echo -e "cesium service running: \n$P"
+	else
+		#node $BASE/cesium/geonode/geocesium --port 8083 --public &
+		#node $BASE/cesium/server --port 8083 --public &
+		node $CESIUM/server.cjs --port 8083 --public &
+	fi
+	;;
+
 cesium.)
+	############################
+	# cesium
+	############################
+	bash maint.sh $2_$1
+	;;
+
+start_nodered.)
+	if P=$(pgrep node-red); then
+		echo -e "nodered service running: \n$P"
+	else
+		#node $BASE/nodered/node_modules/node-red/red &
+		node $RED/red -s $RED/settings.js &
+	fi
+	;;
+
+_nodered.)
 	case "$2." in
 		start.)
-			if P=$(pgrep cesium); then
-				echo -e "cesium service running: \n$P"
-			else
-				#node $BASE/cesium/geonode/geocesium --port 8083 --public &
-				#node $BASE/cesium/server --port 8083 --public &
-				node $CESIUM/server.cjs --port 8083 --public &
-			fi
+			bash maint.sh start nodered
 			;;
 	esac
 	;;
 
-nodered.)
-	case "$2." in
-		start.)
-			if P=$(pgrep node-red); then
-				echo -e "nodered service running: \n$P"
-			else
-				#node $BASE/nodered/node_modules/node-red/red &
-				node $RED/red -s $RED/settings.js &
-			fi
-			;;
-	esac
+install_docker.)
+	mkdir -p $BASE/temp; cd $BASE/temp
+	# download and execute install script from the Docker team
+	wget -qO- https://get.docker.com/ | sh
+	# add your user to the docker group
+	sudo usermod -aG docker $(whoami)
+	# Set Docker to start automatically at boot time
+	sudo systemctl enable docker.service
+
+	bash doc.sh docker start
 	;;
 
-############################
-# docker
+start_docker.)
+	# probe to expose /dev/nvidia device drivers to docker
+	# $BASE/nvidia/bin/x86_64/linux/release/deviceQuery
+
+	sudo systemctl start docker.service
+	docker images
+	docker ps -a
+	;;
+
+docker.)
+	############################
+	# docker
 	# https://docker-curriculum.com/
 	# https://docs.docker.com/engine/reference/commandline/build/
 	# https://stackify.com/docker-build-a-beginners-guide-to-building-docker-images/
@@ -1089,29 +1137,7 @@ nodered.)
 	# docker build -t acmesds/totem .
 	# docker run -it ed6357ba5623 sh 
 	############################
-docker.)
-	case "$2." in
-		install.)
-			mkdir -p $BASE/temp; cd $BASE/temp
-			# download and execute install script from the Docker team
-			wget -qO- https://get.docker.com/ | sh
-			# add your user to the docker group
-			sudo usermod -aG docker $(whoami)
-			# Set Docker to start automatically at boot time
-			sudo systemctl enable docker.service
-
-			bash doc.sh docker start
-		;;
-
-		start.)
-			# probe to expose /dev/nvidia device drivers to docker
-			# $BASE/nvidia/bin/x86_64/linux/release/deviceQuery
-
-			sudo systemctl start docker.service
-			docker images
-			docker ps -a
-			;;
-		esac
+	bash maint.sh $2_$1
 	;;
 
 pubmake.)
@@ -1144,16 +1170,19 @@ pubprime.)
 	;;
 	
 
+proxy.)	# establish email proxy
+	ssh jamesdb@54.86.26.118 -L 5200:172.31.76.130:8080 -i ~/.ssh/aws_rsa.pri	
+	;;
+		
+
 # legacy
 
 _dbrecover.)
 	bash ./maint.sh mysql prime
 	;;
-
 _restyle.)
 	echo "to be developed"
 	;;
-
 _prmgen.)	# legacy codedoc gen
 
 	documentation build prm_*.js -f html -o prm -c /local/docconfig.json
@@ -1167,7 +1196,6 @@ _prmput.)	# legacy jsduck host
 	#cp README.md $DUCK/readmes/$MODULE.md
 	echo "uploaded $MODULE to jsduck host"
 	;;
-
 _prmget.)	# legacy jsduck host
 	cd /local/service/$MODULE
 	cp -r /mnt/installs/jsduck/output/$MODULE/* prm
@@ -1178,14 +1206,12 @@ _duckpush.)
 	# doxygen config.oxy
 	bash ./maint.sh putduck totem
 	;;
-
 _duckpull.)
 	cd /local/babel
 	duckpull totem
 	duckpull debe
 	duckpull enum
 	;;
-
 _docall.)
 	for mod in "${MODULES[@]}"; do
 
@@ -1195,13 +1221,8 @@ _docall.)
 	done
 	;;
 	
-proxy.)	# establish email proxy
-	ssh jamesdb@54.86.26.118 -L 5200:172.31.76.130:8080 -i ~/.ssh/aws_rsa.pri	
-	;;
-		
 _nada.)	# quite mode
 	;;
-
 _notes.) 		# centos install notes
 	vi notes.txt
 	;;
@@ -1220,7 +1241,6 @@ _bind.) 	# rebind atomic engines
 	cd $ENGINES
 	node-gyp rebuild $GYPOPTS
 	;;
-
 _archive.) 	# archive service to archive area
 
 	echo "Archiving to $MAP/snapshots"
@@ -1230,10 +1250,10 @@ _archive.) 	# archive service to archive area
 	#zip -ry $MAP/snapshots/totem.zip atomic -x atomic/.git/\* atomic/node_modules/\*	
 	;;
 
-############################
-# git Local and remote archives
-	############################
 git.)
+	############################
+	# git Local and remote archives
+	############################
 	case "$2." in
 		install.)
 			sudo yum install git
@@ -1268,7 +1288,7 @@ help.)	# some help
 	echo "	. maint.sh FILE.js OPTIONS"
 	;;
 
-netrestart.)
+start_net.)
 	sudo /etc/init.d/network restart
 	;;
 
