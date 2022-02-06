@@ -23,7 +23,7 @@ Your installation is then configured for a desired run-mode
 
 	bash maint.sh config [admin || prot || oper]
 	
-and required database/app services are started
+and the database/app services for this run-mode are started
 
 	bash maint.sh [debe || totem] start
 
