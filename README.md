@@ -8,8 +8,7 @@ Thus, after priming your project development folder
 
 	git clone https://github.com/totemstan/acmesds
 	
-Because a **Forked** installation is for **TOTEM** developers, such installations require
-various upgrades (compute frameworks, tools, os patches, etc) to your host Centos 7.x machine
+you must upgrade your CentOS host machine [*]
 
 	bash maint.sh os_upgrade
 
@@ -27,6 +26,9 @@ Your installation is then configured for a desired run-mode
 and the database/app services for this run-mode are started
 
 	bash maint.sh [debe || totem] start
+
+[*] Because a **Forked** installation is for **TOTEM** developers, such installations require
+various upgrades (compute frameworks, tools, os patches, etc) to your host Centos 7.x machine.
 
 # FEDERATED TOTEM
 
