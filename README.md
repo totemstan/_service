@@ -38,15 +38,17 @@ installation, administration, security and accreditation of services.  Indeed, t
 option requires only a [docker](https://www.docker.com/)-[git](https://git-scm.com/downloads) 
 enabled host machine (windows/linux).
 
-**Federated TOTEM** installations, like **Forked TOTEM** installations **, come in two 
+**Federated TOTEM** installations, like **Forked TOTEM** installations, come in two 
 flavors: the barebones `TOTEM image` service and the full-function `DEBE image` service,
-each of these images are completely independent of each other [*].  When started, these 
-`TOTEM/DEBE image`s become networked with the `OS/MySQL images` to form either a
+each of these images are completely independent of each other [*].  
+
+When started, these 
+`TOTEM/DEBE images` become networked with `OS/MySQL images` to form a
 `TOTEM-MySQL-Neo4J-OS` (barebones) or a `DEBE-MySQL-Neo4J-OS` (full-function) network.
 
 The table below summarizes the functions of each image/service:
 
-| Docker image | Network Host | Provides | Requires Host |
+| Image | Network Host | Provides | Requires Host |
 | ----- | ------ | ----------- | -------- |
 | OS  | totemhost | CentOS | none |
 | MySQL | mysqlhost | MySQL database | none |
