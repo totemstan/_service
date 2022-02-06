@@ -12,15 +12,19 @@ various upgrades (compute frameworks, tools, os patches, etc) to your host Cento
 
 	bash maint.sh os_upgrade
 
-After your OS has been upgraded, you may install
+After your OS has been upgraded, you create a `debe` (full-function) or 
+a `totem` (barebones) installation
 
 	bash maint.sh [debe || totem] install
 	
-to create a `debe` (full-function) or a `totem` (barebones) installation, as desired.
+as desired.
 
-Your installation is then configured for a desired run-mode and started using
+Your installation is then configured for a desired run-mode
 
 	bash maint.sh config [admin || prot || oper]
+	
+and required database/app services are started
+
 	bash maint.sh [debe || totem] start
 
 # FEDERATED TOTEM
