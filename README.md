@@ -37,8 +37,8 @@ Two **Federated installations** are available: the `TOTEM-MySQL-Neo4J-OS` (bareb
 and the `DEBE-MySQL-Neo4J-OS` (full-function) [dockerized](https://www.docker.com/)) network.
 
 Docker images (being self-contained, virtual machines) streamline the maintenance, delivery, 
-installation, administration, security and accreditation of services.  Indeed, a **Federated** 
-installation avoids the intrinsic complexity of **Forked** installations, and require only 
+installation, administration, security and accreditation of services.  Indeed, a **Federated
+installation** avoids the intrinsic complexity of **Forked installations**, and require only 
 a [docker](https://www.docker.com/)-[git](https://git-scm.com/downloads) 
 enabled host machine (windows/linux).
 
