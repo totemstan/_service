@@ -1,7 +1,8 @@
 # FORKED TOTEM
 
-A **Forked** installation offers two installation paths: a barebones `TOTEM module` 
-and a full-function `DEBE module`, each of these modules having their own module dependencies.
+A **Forked** installation offers two installation paths: a barebones [TOTEM module](https://github.com/totemstan/totem) 
+and a full-function [DEBE module](https://github.com/totemstan/debe), each of these 
+modules having their own module dependencies.
 
 Thus, after priming your project development folder
 
@@ -53,7 +54,8 @@ The table below summarizes the functions of each image/service:
 | TOTEM | totemhost | Barebones GUI-less web service | mysqlhost |
 | DEBE  | totemhost | Full GUI web service | mysqlhost |
 
-[*] So, whereas the `DEBE image` contains the `DEBE module` and the `TOTEM module`, the 
+[*] So, whereas the `DEBE image` contains the [DEBE module](https://github.com/totemstan/debe)
+and the [TOTEM module](https://github.com/totemstan/totem), the 
 `DEBE image` does not require the `TOTEM image` as these images are completely self-contained.
 
 Thus, after priming your project folder
