@@ -1,6 +1,6 @@
 # FORKED TOTEM
 
-A **Forked** installation offers two installation paths: a barebones [TOTEM module](https://github.com/totemstan/totem) 
+A **Forked installation** offers two installation paths: a barebones [TOTEM module](https://github.com/totemstan/totem) 
 and a full-function [DEBE module](https://github.com/totemstan/debe), each of these 
 modules having their own module dependencies.
 
@@ -27,12 +27,13 @@ and the database/app services for this run-mode are started
 
 	bash maint.sh [debe || totem] start
 
-[*] Because a **Forked** installation is for **TOTEM** developers, such installations require
+[*] Because a **Forked installation** is for **TOTEM** developers, such installations require
 various upgrades (compute frameworks, tools, os patches, etc) to your host Centos 7.x machine.
+Consider the **Federated installation** path if you are unable to upgrade your host machine.
 
 # FEDERATED TOTEM
 
-Two **Federated** installation options are available: the `TOTEM-MySQL-Neo4J-OS` (barebones)
+Two **Federated installations** are available: the `TOTEM-MySQL-Neo4J-OS` (barebones)
 and the `DEBE-MySQL-Neo4J-OS` (full-function) [dockerized](https://www.docker.com/)) network.
 
 Docker images (being self-contained, virtual machines) streamline the maintenance, delivery, 
@@ -41,7 +42,7 @@ installation avoids the intrinsic complexity of **Forked** installations, and re
 a [docker](https://www.docker.com/)-[git](https://git-scm.com/downloads) 
 enabled host machine (windows/linux).
 
-**Federated TOTEM** installations, like **Forked TOTEM** installations, come in two 
+**Federated installations**, like **Forked installations**, come in two 
 flavors: the barebones `TOTEM image` service and the full-function `DEBE image` service,
 each of these images are completely independent of each other [*].  
 
