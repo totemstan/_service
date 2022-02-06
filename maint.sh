@@ -178,7 +178,12 @@ jsdb_config.)
 	# NEO4J
 	#export NEO4J_HOST="bolt://localhost" # "http://root:NGA@localhost:7474"
 	#export NEO4J_USER="neo4j"
-	export URL_LEXNEX=https://services-api.lexisnexis.com/v1/
+	#export URL_LEXNEX=https://services-api.lexisnexis.com/v1/
+	export URL_MYSQL=http://$KEY_MYSQL@localhost:3306
+	export URL_NEO4J=http://$KEY_NEO4J@localhost:7474
+	export URL_TXMAIL=http://$KEY_TXMAIL@smtp.comcast.net:587
+	export URL_RXMAIL=
+	export URL_LEXNEX=https:$KEY_LEXNEX//services-api.lexisnexis.com/v1/
 	;;
 seclink_config.)
 	export LINK_HOST=totem
@@ -203,11 +208,6 @@ totem_config.)
 	# define service url
 	export URL_MASTER=http://localhost:8080
 	export URL_WORKER=https://localhost:8081
-	export URL_MYSQL=http://$KEY_MYSQL@localhost:3306
-	export URL_NEO4J=http://$KEY_NEO4J@localhost:7474
-	export URL_TXMAIL=http://$KEY_TXMAIL@smtp.comcast.net:587
-	export URL_RXMAIL=
-	export URL_LEXNEX=https:$KEY_LEXNEX//services-api.lexisnexis.com/v1/
 
 	#export URL_WORKER=https://localhost:8443
 	#export URL_WORKER=http://localhost:8081  # in debug mode
