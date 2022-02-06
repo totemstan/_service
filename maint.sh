@@ -75,6 +75,19 @@ start.)
 	bash maint.sh start_docker
 	;;
 
+init.)
+	case "$2." in
+		debe.)
+			bash maint.sh debe install
+			;;
+		totem.)
+			bash maint.sh totem install
+			;;
+		os.)
+			bash maint.sh os_update
+		esac
+	;;
+
 debe_config.)
 	# specific geonode client
 	export PUBLIC=./public					# public path
