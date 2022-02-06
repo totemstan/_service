@@ -42,7 +42,7 @@ installation** avoids the intrinsic complexity of **Forked installations**, and 
 a [docker](https://www.docker.com/)-[git](https://git-scm.com/downloads) 
 enabled host machine (windows/linux).
 
-**Federated installations**, like **Forked installations**, come in two 
+**Federated installations** (like **Forked installations**) come in two 
 flavors: the barebones `TOTEM image` service and the full-function `DEBE image` service,
 each of these images are completely independent of each other [*].  
 
