@@ -1,16 +1,19 @@
 # FORKED TOTEM
 
-The **Forked TOTEM** installation option offers two installation paths: a barebones `TOTEM module` 
-and a full-function `DEBE module`, each of these modules having their own dependencies on other
-modules.  Because **Forked TOTEM** installations are intended for development, they require
+A **Forked** installation offers two installation paths: a barebones `TOTEM module` 
+and a full-function `DEBE module`, each of these modules having their own module dependencies.
+Because a **Forked** installation is intended for TOTEM developers, such installations require
 various upgrades (compute frameworks, tools, os, etc, etc) to your host (centos) machine.
 
-Thus, after priming your project development folder:
+Thus, after priming your project development folder
 
 	git clone https://github.com/totemstan/acmesds
-	bash maint.sh config
+	
+initialize your development environment for the desired run-mode
 
-you may use its `maint.sh` script:
+	bash maint.sh config [admin || prot || oper]
+
+then
 
 	bash maint.sh [debe || totem] init
 	bash maint.sh [debe || totem] start
@@ -19,7 +22,7 @@ to initialize and start a `debe` (full-function) or a `totem` (barebones) projec
 
 # FEDERATED TOTEM
 
-Two **Federated TOTEM** installation options are available: the `TOTEM-MySQL-Neo4J-OS` (barebones)
+Two **Federated** installation options are available: the `TOTEM-MySQL-Neo4J-OS` (barebones)
 and the `DEBE-MySQL-Neo4J-OS` (full-function), that relying on 4 [docker images](https://www.docker.com/)).
 
 Docker images (being self-contained, virtual machines) streamline the maintenance, delivery, 
