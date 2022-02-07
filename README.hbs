@@ -1,32 +1,32 @@
 # Working with TOTEM
 
-There are 4 methods to work with **TOTEM** on your host machine
+There are several methods to work with **TOTEM** on your host machine
 
-	<table>
-		<tr>
-			<th>Method</th><th>Host Requirements</th>
-		</tr>
-		<tr>
-			<th>Forked</th><th>
-				git, nodejs, anaconda, caffe, cuda, tensorflow, etc
-			</th>
-		</tr>
-		<tr>
-			<th>Federated</th><th>
-				git, docker
-			</th>
-		</tr>
-		<tr>
-			<th>Agent</th><th>
-				nodejs
-			</th>
-		</tr>
-		<tr>
-			<th>User</th><th>
-				any browser
-			</th>
-		</tr>
-	</table>
+<table>
+	<tr>
+		<th>Method</th><th>Host Requirements</th>
+	</tr>
+	<tr>
+		<th>Forked</th><th>
+			git, nodejs, anaconda, caffe, cuda, tensorflow, etc
+		</th>
+	</tr>
+	<tr>
+		<th>Federated</th><th>
+			git, docker
+		</th>
+	</tr>
+	<tr>
+		<th>Agent</th><th>
+			nodejs
+		</th>
+	</tr>
+	<tr>
+		<th>User</th><th>
+			any browser
+		</th>
+	</tr>
+</table>
 	
 
 # FORKED TOTEM
