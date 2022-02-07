@@ -1,3 +1,34 @@
+# Working with TOTEM
+
+There are 4 methods to work with **TOTEM** on your host machine
+
+	<table>
+		<tr>
+			<th>Method</th><th>Host Requirements</th>
+		</tr>
+		<tr>
+			<th>Forked</th><th>
+				git, nodejs, anaconda, caffe, cuda, tensorflow, etc
+			</th>
+		</tr>
+		<tr>
+			<th>Federated</th><th>
+				git, docker
+			</th>
+		</tr>
+		<tr>
+			<th>Agent</th><th>
+				nodejs
+			</th>
+		</tr>
+		<tr>
+			<th>User</th><th>
+				any browser
+			</th>
+		</tr>
+	</table>
+	
+
 # FORKED TOTEM
 
 A **Forked installation** offers two installation paths: a barebones [TOTEM module](https://github.com/totemstan/totem) 
@@ -126,9 +157,38 @@ Feel free to
 [SBU](https://totem.nga.mil/milestones.view)
 ).
 
-## License
+# TOTEM Agent
 
-[MIT](LICENSE)
+To add your compute agents to TOTEM's compute cloud, simply register your agent 
+using the following code pattern.  in nodejs that listens
+for agent requests on, say, port 3333
+
+	node
+	require("http").get("TOTEM_SERVICE/agent?port=3333", res => {
+		var msg = "";
+		res.on("data", data => msg += data.toString());
+		res.on("end", () => {
+			eval(msg);
+			myAgent({	// define your agents here
+				add: (req,res) => {	// an agent to add x and y
+					const 
+						{x,y} = req.query,
+						calc = (x,y) => x+y;
+
+					res( calc(x,y) );
+				},
+				cat: (req,res) => {	// an agent to concatenate x with y
+					const 
+						{x,y} = req.query,
+						calc = (x,y) => [x,y];
+
+					res( calc(x,y) );
+				}			
+			});
+		});
+	}).end();
+
+where TOTEM_SERVICE is the url to the **TOTEM** service.
 
 * * *
 
