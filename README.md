@@ -1,6 +1,6 @@
-# Working with TOTEM
+# Installing TOTEM
 
-There are several methods to work with **TOTEM** on your host machine
+There are several methods to "install" **TOTEM** on your host machine
 
 <table>
 	<tr>
