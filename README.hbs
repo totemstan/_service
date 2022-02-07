@@ -160,8 +160,8 @@ Feel free to
 # TOTEM Agent
 
 To add your compute agents to TOTEM's compute cloud, simply register your agent 
-using the following code pattern.  in nodejs that listens
-for agent requests on, say, port 3333
+using the following code pattern.  In the example below, `add` and `cat` 
+agents are listning on port 3333: 
 
 	node
 	require("http").get("TOTEM_SERVICE/agent?port=3333", res => {
