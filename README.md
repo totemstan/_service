@@ -1,6 +1,6 @@
 # Installing TOTEM
 
-There are several methods to "install" **TOTEM** on your host machine
+There are three methods to "install" **TOTEM** on your host machine
 
 <table>
 	<tr>
@@ -8,7 +8,7 @@ There are several methods to "install" **TOTEM** on your host machine
 	</tr>
 	<tr>
 		<th>Forked</th><th>
-			git, nodejs, anaconda, caffe, cuda, tensorflow, etc
+			many
 		</th>
 	</tr>
 	<tr>
@@ -60,7 +60,7 @@ Consider the **Federated installation** path if you are unable to upgrade your h
 # FEDERATED TOTEM
 
 Two **Federated installations** are available: the `TOTEM-MySQL-Neo4J-OS` (barebones)
-and the `DEBE-MySQL-Neo4J-OS` (full-function) [dockerized](https://www.docker.com/)) network.
+and the `DEBE-MySQL-Neo4J-OS` (full-function) [dockerized](https://www.docker.com/) network.
 
 Docker images (being self-contained, virtual machines) streamline the maintenance, delivery, 
 installation, administration, security and accreditation of services.  Indeed, a **Federated
@@ -146,7 +146,7 @@ agents are listening on port 3333:
 		});
 	}).end();
 
-where TOTEM_SERVICE is the url to the **TOTEM** service.
+where TOTEM_SERVICE is the url to any **TOTEM** service.
 
 ## Program Reference
 <details>
