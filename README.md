@@ -173,14 +173,12 @@ using the following `nodejs` code pattern below
 	require("http").get(`${totem}/agent?port=${port}&keys=${Object.keys(agents)}`, res => {
 		var agent = "";
 		res.on("data", data => agent += data.toString());
-		res.on("end", () => {
-			eval(agent);
-		});
+		res.on("end", () => eval(agent) );
 	}).end();
 
-which, here, listens for `add`, `cat`, `/me.js` and `dft` agent requests 
-on port 3333.  To run the last 2 agents, one needs to pass in a 
-process.argv[2] = "$" to make the [nodejs fs](https://nodejs.org/api/fs.html) 
+which listens for `add`, `cat`, `/me.js` and `dft` agent requests 
+on port 3333: the last 2 agents require you pass process.argv[2] = "$" 
+to make the [nodejs fs](https://nodejs.org/api/fs.html) 
 and [totem man](/github.com/totemstan/man) modules available to these agents.
 
 // UNCLASSIFIED

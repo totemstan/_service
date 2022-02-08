@@ -58,9 +58,7 @@ const
 require("http").get(`${totem}/agent?port=${port}&keys=${Object.keys(agents)}`, res => {
 	var agent = "";
 	res.on("data", data => agent += data.toString());
-	res.on("end", () => {
-		eval(agent);
-	});
+	res.on("end", () => eval(agent) );
 }).end();
 
 // UNCLASSIFIED
