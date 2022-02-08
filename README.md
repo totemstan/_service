@@ -1,6 +1,6 @@
 # Installing TOTEM
 
-There are three methods to "install" **TOTEM** on your host machine
+There are three methods to "install" **TOTEM** on your host machine:
 
 | Method | Complexity | | Host Requirements | Use case |
 | ------ | ---------- | ----------------- | -------- |
