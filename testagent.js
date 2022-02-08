@@ -1,10 +1,15 @@
 // UNCLASSIFIED
 /**
 To add your compute agents to TOTEM's compute cloud, simply register your agent 
-using the code pattern below which, here, listens for `add, `cat`, `/me.js` and
-`dft` requests on port 3333.
+using the following `nodejs` code pattern below
+
+which listens for `add`, `cat`, `/me.js` and `dft` agent requests 
+on port 3333: the last 2 agents require you pass process.argv[2] = "$" 
+to make the [nodejs fs](https://nodejs.org/api/fs.html) 
+and [totem man](/github.com/totemstan/man) modules available to these agents.
 */
 
+// revise as needed
 const 
 	need$ = process.argv[2] ? true : false,
 	$ = need$ ? require("./man") : null, // "/mnt/public/totem/repo/man",
