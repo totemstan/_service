@@ -2,27 +2,11 @@
 
 There are three methods to "install" **TOTEM** on your host machine
 
-<table>
-	<tr>
-		<th>Method</th><th>Host Requirements</th>
-	</tr>
-	<tr>
-		<th>Forked</th><th>
-			many
-		</th>
-	</tr>
-	<tr>
-		<th>Federated</th><th>
-			git, docker
-		</th>
-	</tr>
-	<tr>
-		<th>Agent</th><th>
-			nodejs
-		</th>
-	</tr>
-</table>
-	
+| Method | Host Requirements | Use case |
+| ------ | ----------------- | -------- |
+| Forked  	| git,nodejs,etc    | TOTEM development |
+| Federated | git, docker		| Beta testing |
+| Agent		| nodejs			| Cloud compute |
 
 # FORKED TOTEM
 
