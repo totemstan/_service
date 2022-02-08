@@ -161,6 +161,11 @@ using the following `nodejs` code pattern below
 		res.on("end", () => eval(agent) );
 	}).end();
 
+which listens for `add`, `cat`, `/me.js` and `dft` agent requests 
+on port 3333: the last 2 agents require you pass process.argv[2] = "$" 
+to make the [nodejs fs](https://nodejs.org/api/fs.html) 
+and [totem man](/github.com/totemstan/man) modules available to these agents.
+
 // UNCLASSIFIED
 
 ## Program Reference
