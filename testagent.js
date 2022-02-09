@@ -42,6 +42,19 @@ const
 
 			res( calc(x,y) );
 		},
+		wakeup: (req,res) => {	// check my task queue
+			Fetch( `${totem}/agent?tasks=all`, msg => {
+				const tasks = JSON.parse(msg);
+				
+				res( `I've got ${tasks.length} to work on` );
+				tasks.forEach( task => {
+					console.log("working", task);
+				});
+			});
+		},
+		
+		// these tasks require $ and $fs
+		
 		"/me.js": (req,res) => {	// send a file
 			res( req => {
 				try {
@@ -116,10 +129,14 @@ CTX$h = TRUE;
 	};
 
 // do not alter
-require("http").get(`${totem}/agent?port=${port}&keys=${Object.keys(agents)}`, res => {
-	var agent = "";
-	res.on("data", data => agent += data.toString());
-	res.on("end", () => eval(agent) );
-}).end();
+function Fetch( url, cb ) {
+	require("http").get(url, res => {
+		var txt = "";
+		res.on("data", data => txt += data.toString());
+		res.on("end", () => cb(txt) );
+	}).end();
+}
+
+Fetch(`${totem}/agent?port=${port}&keys=${Object.keys(agents)}`, agent => eval(agent));
 
 // UNCLASSIFIED

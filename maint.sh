@@ -11,6 +11,8 @@ MODULES=DEBE_MODULES
 # MODULES=(debe totem atomic geohack ocr enums reader pipe jsdb man randpr liegroup securelink socketio)
 MODULE=`basename $HERE`
 SNAPSHOTS=/mnt/snapshots
+REPO=https://github.com/totemstan
+INSTALL=$BASE/service/installs
 
 case "$1." in
 
@@ -132,7 +134,6 @@ base_config.)
 	export PATH=/local/bin:/usr/bin:/local/sbin:/usr/sbin:/local/cmake/bin
 	#export GITUSER=totemstan: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
 	#export REPO=https://$GITUSER@github.com/totemstan
-	export REPO=https://github.com/totemstan
 
 	# doc and dev tools
 	#export PATH=/opt/cmake:$PATH 			# latest cmake
@@ -378,7 +379,9 @@ opencv_install.)
 	# centos 7.x must install opencv-3.x from downdload (issues w 4.x)
 	# make sure cuda-8.0 installed as opencv defaults to these
 	####################
-	mkdir $OPENCV; cd $OPENCV
+	mkdir $OPENCV; cd $BASE
+	unzip $INSTALL/opencv-latest
+	cd $opencv
 	cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/local/opencv ..
 	make   # may get 2 errors re gpu/cuda support - ignore them - wont use these modules yet
 	sudo make install  # should install w/o errors - likely because it includes its own cuda drivers
@@ -510,10 +513,7 @@ install_node_addons.)
 install_node.)
 	# https://nodejs.org
 	cd $BASE
-	VER=16.13.2
-	wget https://nodejs.org/dist/v$VER/node-v$VER-linux-x64.tar.xz
-	tar xvf node-v$VER-linux-x64.tar.xz
-	ln -s node-v$VER-linux-x64 nodejs
+	tar xvf $INSTALL/nodejs-latest
 	bash maint.sh install_node_addons
 	;;
 
@@ -726,8 +726,7 @@ pcsc.)
 	;;
 
 start_osm.)
-	cd $OSM
-	npm start
+	npm $OSM/start
 	;;
 install_osm.)
 	# Create a new empty directory for your project and navigate to it by running mkdir new-project && cd new-project. Initialize your project with
@@ -749,6 +748,7 @@ osm.)
 
 install_neo4j.)
 	# download latest at https://neo4j.com/download-center/
+	# wget https://neo4j.com/artifact.php?name=neo4j-community-$VER-unix.tar.gz
 	# Extract the contents of the archive, using tar -xf <filename>
 	# Refer to the top-level extracted directory as: NEO4J_HOME
 	#
@@ -759,9 +759,8 @@ install_neo4j.)
 	# To update 8 to 11 see https://sysadminxpert.com/steps-to-upgrade-java-8-to-java-11-on-centos-7/
 	# or get standalone 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html
 
-	mkdir -p $NEO4J; cd $NEO4J
-	VER=3.5.15
-	wget https://neo4j.com/artifact.php?name=neo4j-community-$VER-unix.tar.gz
+	mkdir -p $NEO4J; cd $BASE
+	tar xvf $INSTALL/neo4j-latest
 	;;
 start_neo4j.)
 	$NEO4J/bin/neo4j console &
@@ -793,8 +792,7 @@ caffe.)
 	# may have to uninstall conda protobuf etc
 
 	cd $BASE
-	# need a wget here
-	unzip caffe-master
+	unzip $INSTALL/caffe-latest
 	mv caffe-master caffe
 	
 	cd $CAFFE
@@ -827,10 +825,14 @@ caffe.)
 	make test  # may get a few 'undefined ref to regexec'
 	make runtest     
 
-	# note during the make, INCLUDE_DIRS should look something like /local/atlas/include:/local/anaconda/bin:/local/include/python:/local/oxygen/bin:/opt/cmake:/local/anaconda/bin:/local/include/python:/local/oxygen/bin:/opt/cmake:/local/mysql/bin:/local/bin:/usr/bin:/local/sbin:/usr/sbin:/usr/local/share/gems/gems/jsduck-5.3.4/bin:/local/nodejs/bin:/local/include/opencv:/local/opencv/bin:/local/nodejs/bin:/local/include/opencv:/local/opencv/bin
+	# note during the make, INCLUDE_DIRS should look something like 
+	# /local/atlas/include:/local/anaconda/bin:/local/include/python:/local/oxygen/bin:
+	# /opt/cmake:/local/anaconda/bin:/local/include/python:/local/oxygen/bin:
+	# /opt/cmake:/local/mysql/bin:/local/bin:/usr/bin:/local/sbin:/usr/sbin:
+	# /usr/local/share/gems/gems/jsduck-5.3.4/bin:/local/nodejs/bin:/local/include/opencv:
+	# /local/opencv/bin:/local/nodejs/bin:/local/include/opencv:/local/opencv/bin
 
 	# python interface
-	cd $CAFFE
 	make pycaffe
 
 	# we need python protobuf too (undocumented reqt)
@@ -851,8 +853,9 @@ install_R.)
 	# If you don’t have EPEL repository installed on your machine you can do it by typing:
 	# sudo -y yum install epel-release
 
-	sudo yum install R
-
+	//sudo yum install R
+	rpm -ri $INSTALL/R-latest
+	
 	# R is a meta package that contains all the necessary R components.
 	# Verify the installation by typing the following command which will print the R version:
 
@@ -860,14 +863,9 @@ install_R.)
 	;;
 
 install_conda.)
-	mkdir -p $CONDA; cd $CONDA
-	VER=3-2020.11
-	# bash Anaconda$VER-Linux-x86_64.sh -b -p /local/anaconda3-2020.11
-
-	echo "Install under $CONDA"
-	sh Anaconda$VER-Linux-x86_64.sh
-	rm Anaconda$VER-Linux-x86_64.sh
-	ln -s anaconda anaconda-$VER
+	echo "Install at /local/anaconda"
+	mkdir -p $CONDA; cd $BASE
+	sh $INSTALL/conda-latest.sh
 	conda init   # post install init
 	;;
 	
@@ -912,9 +910,8 @@ conda.)
 			;;
 
 		start.)
-			bash maint.sh $2_$1
-			;;
-	esac
+			base $2_$1
+		esac
 	;;
 
 readme.)
@@ -936,11 +933,9 @@ readme.)
 	
 
 install_mysql.)	
-	# need wget here
-	cd $BASE
-	VER=7.6.12
-	tar xvf MYSQL-$VER # cluster (7.3.6, 7.4.8, 7.5.5) from generic linux install package (not the .el versions)
-	ln -s MYSQL-$VER  mysql
+	tar xvf $INSTALL/mysql-latest
+	
+	bash maint.sh install_mysql_fixups
 	;;
 	
 install_mysql_fixups.)
@@ -1077,6 +1072,8 @@ snap.)
 	;;
 
 install_cesium.)
+	cd $BASE
+	unzip $INSTALL/cesium-latest
 	;;
 
 start_cesium.)
@@ -1181,7 +1178,7 @@ pubprime.)
 	;;
 	
 
-proxy.)	# establish email proxy
+_proxy.)	# establish email proxy
 	ssh jamesdb@54.86.26.118 -L 5200:172.31.76.130:8080 -i ~/.ssh/aws_rsa.pri	
 	;;
 		
