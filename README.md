@@ -4,8 +4,8 @@ There are three methods to "install" **TOTEM** on your host machine:
 
 | Method | Complexity | Host Requirements | Use case |
 | ------ | ---------- | ----------------- | -------- |
-| Forked  	| high 	 | git,nodejs,etc,etc | TOTEM development |
-| Federated | medium | git, docker		| Beta testing |
+| Forked  	| high 	 | git, nodejs, anaconda, tensorflow, caffe, etc | TOTEM development |
+| Federated | medium | docker			| Beta testing |
 | Agent		| low 	 | nodejs			| Cloud compute |
 
 # FORKED TOTEM
@@ -33,7 +33,7 @@ Your installation is then configured for a desired run-mode
 
 	bash maint.sh config [admin || prot || oper]
 	
-and the database/app services for this run-mode are started
+then start the apps required for this run-mode
 
 	bash maint.sh [debe || totem] start
 

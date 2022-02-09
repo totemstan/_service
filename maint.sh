@@ -893,7 +893,7 @@ install_conda_addons.)
 	python main.py smop solver.m
 	;;
 start_conda.)
-	$CONDA/bin/jupyter-notebook --ip 0.0.0.0 --port 8081
+	$CONDA/bin/jupyter-notebook --ip 0.0.0.0 --port 8084
 	;;
 
 conda.)
