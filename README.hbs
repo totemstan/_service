@@ -194,9 +194,10 @@ using the following `nodejs` code pattern below
 	}).end();
 
 which listens for `add`, `cat`, `/me.js`, `dft`, `test1`, and `test2` agent requests 
-on port 3333: the last 2 agents require you pass process.argv[2] = "$" 
+on port 3333: the last 4 agents require you pass process.argv[2] = "$" 
 to make the [nodejs fs](https://nodejs.org/api/fs.html) 
-and [totem man](/github.com/totemstan/man) modules available to these agents.
+and [totem man](/github.com/totemstan/man) modules available to these agents;
+the last 2 demonstrate R-opencv-python support (assummed installed).
 
 // UNCLASSIFIED
 
