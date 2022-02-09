@@ -101,7 +101,7 @@ where
 
 # TOTEM Agent
 
-To add your compute agents to TOTEM's compute cloud, simply register your agent 
+To add your compute agents to TOTEM's compute cloud, simply register your agents
 using the following `nodejs` code pattern below
 
 	// revise as needed
@@ -134,7 +134,7 @@ using the following `nodejs` code pattern below
 				res( calc(x,y) );
 			},
 			"/me.js": (req,res) => {	// send a file
-				res( path => {
+				res( req => {
 					try {
 						$fs.readFile( "./testagent.js", "utf-8", (err,txt) => res(txt) );
 					}
@@ -142,7 +142,7 @@ using the following `nodejs` code pattern below
 						res("Error: file not found");
 					}
 				});
-		},
+			},
 			dft: (req,res) => {	// fft of post `x` array + query `a` constant 
 				const
 					{ y } = ctx = $("y=dft(x+a)", {		// context for $
@@ -152,9 +152,13 @@ using the following `nodejs` code pattern below
 
 				res( y.get("re&im") );
 			},
-			test1: (req,res) => {	// test via python
+			python: (req,res) => {	// test via python
 				const
 					{ a } = $.py(`
+	import numpy as np;
+
+	print 'console log: an array if i need it', np.array([1,2,3]);
+
 	def f(x,y):
 		return x+y;
 
@@ -166,7 +170,7 @@ using the following `nodejs` code pattern below
 
 				res( a );
 			},
-			test2: (req,res) => {	// test via R
+			R: (req,res) => {	// test via R
 				const
 					{ a } = ctx = $.R(`
 	print('you da man');
@@ -183,6 +187,22 @@ using the following `nodejs` code pattern below
 
 				//console.log(ctx);
 				res( ctx );
+			},
+			opencv: (req,res) => {
+				const 
+					ctx = $.cv("dummy code", {
+						output: {
+							scale: 0,
+							dim: 100,
+							delta: 1,
+							hits: 10,
+							cascade: ["path1", "path2"]
+						},
+						input: {
+						}
+					});
+
+				res( ctx );
 			}
 		};
 
@@ -193,11 +213,14 @@ using the following `nodejs` code pattern below
 		res.on("end", () => eval(agent) );
 	}).end();
 
-which listens for `add`, `cat`, `/me.js`, `dft`, `test1`, and `test2` agent requests 
-on port 3333: the last 4 agents require you pass process.argv[2] = "$" 
+which listens for `add`, `cat`, `/me.js`, `dft`, `python`, `R` and `opencv` agent requests 
+on port 3333.  Here
+
++ the last 5 agents require you pass a "$" process flag
 to make the [nodejs fs](https://nodejs.org/api/fs.html) 
-and [totem man](/github.com/totemstan/man) modules available to these agents;
-the last 2 demonstrate R-opencv-python support (assummed installed).
+and [totem man](/github.com/totemstan/man) modules available.   
++ the last 3 agents demonstrate R-opencv-python support (assummed installed 
+on your host).
 
 // UNCLASSIFIED
 
