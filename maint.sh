@@ -43,6 +43,7 @@ config.)
 	############################
 	# env setup
 	############################
+	source $BASE/service/totem/config/_pass.sh
 
 	source ./maint.sh base_config
 	source ./maint.sh seclink_config
@@ -201,9 +202,6 @@ totem_config.)
 	#export NET="--net host"
 	#export RUN="run -it $GPU $VOL $NET"
 	#export RUND="$RUN -d"
-
-	# define user/password keys
-	bash $BASE/service/totem/config/_pass.sh
 
 	# define service url
 	export URL_MASTER=http://localhost:8080

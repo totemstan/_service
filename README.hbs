@@ -107,7 +107,7 @@ using the following `nodejs` code pattern below
 	// revise as needed
 	const 
 		need$ = process.argv[2] ? true : false,
-		$ = need$ ? require("./man") : null, // "/mnt/public/totem/repo/man",
+		$ = need$ ? require("./man") : null, // "/mnt/repo/man",
 		$fs = need$ ? require("fs") : null,
 		totems = {
 			RLE: "https://RLENET.126:8443",
@@ -143,7 +143,7 @@ using the following `nodejs` code pattern below
 					}
 				});
 		},
-			"dft": (req,res) => {	// fft of post `x` array + query `a` constant 
+			dft: (req,res) => {	// fft of post `x` array + query `a` constant 
 				const
 					{ y } = ctx = $("y=dft(x+a)", {		// context for $
 						x: req.body.x || [0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0],
@@ -151,6 +151,38 @@ using the following `nodejs` code pattern below
 					});
 
 				res( y.get("re&im") );
+			},
+			test1: (req,res) => {	// test via python
+				const
+					{ a } = $.py(`
+	def f(x,y):
+		return x+y;
+
+	a=f(x,y)
+	`, {
+						x: req.query.x,
+						y: req.query.y
+					});
+
+				res( a );
+			},
+			test2: (req,res) => {	// test via R
+				const
+					{ a } = ctx = $.R(`
+	print('you da man');
+	print('R input ctx=');str(CTX);
+	CTX$d = 'this is a test';
+	CTX$e = list(x=1,y=2,z=3);
+	CTX$a = CTX$x + CTX$y;
+	CTX$g = list(4,5,6);
+	CTX$h = TRUE;
+	`, {
+						x: req.query.x,
+						y: req.query.y
+					});
+
+				//console.log(ctx);
+				res( ctx );
 			}
 		};
 
@@ -161,7 +193,7 @@ using the following `nodejs` code pattern below
 		res.on("end", () => eval(agent) );
 	}).end();
 
-which listens for `add`, `cat`, `/me.js` and `dft` agent requests 
+which listens for `add`, `cat`, `/me.js`, `dft`, `test1`, and `test2` agent requests 
 on port 3333: the last 2 agents require you pass process.argv[2] = "$" 
 to make the [nodejs fs](https://nodejs.org/api/fs.html) 
 and [totem man](/github.com/totemstan/man) modules available to these agents.
