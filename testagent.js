@@ -65,7 +65,7 @@ const
 				}
 			});
 		},
-		dft: (req,res) => {	// fft of post `x` array + query `a` constant 
+		dft: (req,res) => {	// fft of the x-post array + the a-query offset 
 			const
 				{ y } = ctx = $("y=dft(x+a)", {		// context for $
 					x: req.body.x || [0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0],
@@ -74,7 +74,7 @@ const
 
 			res( y.get("re&im") );
 		},
-		python: (req,res) => {	// test via python
+		python: (req,res) => {	// test python engine
 			const
 				{ a } = $.py(`
 import numpy as np;
@@ -92,7 +92,7 @@ a=f(x,y)
 			
 			res( a );
 		},
-		R: (req,res) => {	// test via R
+		R: (req,res) => {	// test R engine
 			const
 				{ a } = ctx = $.R(`
 print('you da man');
@@ -110,17 +110,17 @@ CTX$h = TRUE;
 			//console.log(ctx);
 			res( ctx );
 		},
-		opencv: (req,res) => {
+		opencv: (req,res) => {	// test opencv/caffe engine
 			const 
 				ctx = $.cv("dummy code", {
-					output: {
+					output: {	// classifier output port parms
 						scale: 0,
 						dim: 100,
 						delta: 1,
 						hits: 10,
 						cascade: ["path1", "path2"]
 					},
-					input: {
+					input: {// image input port parms
 					}
 				});
 	

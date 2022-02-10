@@ -45,7 +45,7 @@ config.)
 	############################
 	# env setup
 	############################
-	source $BASE/service/totem/config/_pass.sh
+	source ./totem/config/_pass.sh
 
 	source ./maint.sh base_config
 	source ./maint.sh seclink_config
