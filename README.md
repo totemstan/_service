@@ -249,8 +249,6 @@ on your host).
 + if an agent required **TOTEM**'s [full-featched Fetch](/github.com/totemstan/enums) (oauth-curl-queue-etc
 enabled), we could simply add a `require( "/mnt/totem/enums" )` as well.
 
-// UNCLASSIFIED
-
 ## Program Reference
 <details>
 <summary>
