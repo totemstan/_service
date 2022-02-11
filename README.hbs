@@ -102,9 +102,29 @@ where
 # TOTEM Agent
 
 To add your compute agents to TOTEM's compute cloud, simply register your agents
-using the following `nodejs` code pattern below
+using the following `nodejs` code pattern
 
 	// revise as needed
+	const 
+		port = 3333,
+		agents = {	
+			// your agents go here
+		};
+
+	// do not alter
+	function Fetch( url, cb ) {
+		require("http").get(url, res => {
+			var txt = "";
+			res.on("data", data => txt += data.toString());
+			res.on("end", () => cb(txt) );
+		}).end();
+	}
+
+	Fetch(`${totem}/agent?port=${port}&keys=${Object.keys(agents)}`, agent => eval(agent));
+
+For example, to create `add`, `cat`, `/me.js`, `dft`, `python`, `R` and `opencv` agents
+that listen for requests on port 3333, we replace the `const ...;` with
+
 	const 
 		need$ = process.argv[2] ? true : false,
 		$ = need$ ? require("./man") : null, // "/mnt/repo/man",
@@ -118,7 +138,7 @@ using the following `nodejs` code pattern below
 		},
 		totem = totems.LOCAL,
 		port = 3333,
-		agents = {	// define your agents here
+		agents = {
 			add: (req,res) => {	// an agent to add x and y
 				const 
 					{x,y} = req.query,
@@ -217,22 +237,9 @@ using the following `nodejs` code pattern below
 
 				res( ctx );
 			}
-		};
+		}
 
-	// do not alter
-	function Fetch( url, cb ) {
-		require("http").get(url, res => {
-			var txt = "";
-			res.on("data", data => txt += data.toString());
-			res.on("end", () => cb(txt) );
-		}).end();
-	}
-
-	Fetch(`${totem}/agent?port=${port}&keys=${Object.keys(agents)}`, agent => eval(agent));
-
-
-which, here, listens for `add`, `cat`, `/me.js`, `dft`, `python`, `R` and `opencv` agent requests 
-on port 3333.  Here
+Here
 
 + the last 5 agents require you pass a process arg[2] to include the 
 [nodejs fs](https://nodejs.org/api/fs.html) 
