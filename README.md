@@ -156,7 +156,7 @@ using the following `nodejs` code pattern below
 					}
 				});
 			},
-			dft: (req,res) => {	// fft of post `x` array + query `a` constant 
+			dft: (req,res) => {	// fft of the x-post array + the a-query offset 
 				const
 					{ y } = ctx = $("y=dft(x+a)", {		// context for $
 						x: req.body.x || [0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0],
@@ -165,35 +165,35 @@ using the following `nodejs` code pattern below
 
 				res( y.get("re&im") );
 			},
-			python: (req,res) => {	// test via python
+			python: (req,res) => {	// test python engine
 				const
 					{ a } = $.py(`
-	import numpy as np;
+					import numpy as np;
 
-	print 'console log: an array if i need it', np.array([1,2,3]);
+					print 'console log: an array if i need it', np.array([1,2,3]);
 
-	def f(x,y):
-		return x+y;
+					def f(x,y):
+						return x+y;
 
-	a=f(x,y)
-	`, {
+					a=f(x,y)
+					`, {
 						x: req.query.x,
 						y: req.query.y
 					});
 
 				res( a );
 			},
-			R: (req,res) => {	// test via R
+			R: (req,res) => {	// test R engine
 				const
 					{ a } = ctx = $.R(`
-	print('you da man');
-	print('R input ctx=');str(CTX);
-	CTX$d = 'this is a test';
-	CTX$e = list(x=1,y=2,z=3);
-	CTX$a = CTX$x + CTX$y;
-	CTX$g = list(4,5,6);
-	CTX$h = TRUE;
-	`, {
+					print('you da man');
+					print('R input ctx=');str(CTX);
+					CTX$d = 'this is a test';
+					CTX$e = list(x=1,y=2,z=3);
+					CTX$a = CTX$x + CTX$y;
+					CTX$g = list(4,5,6);
+					CTX$h = TRUE;
+					`, {
 						x: req.query.x,
 						y: req.query.y
 					});
@@ -201,17 +201,17 @@ using the following `nodejs` code pattern below
 				//console.log(ctx);
 				res( ctx );
 			},
-			opencv: (req,res) => {
+			opencv: (req,res) => {	// test opencv/caffe engine
 				const 
 					ctx = $.cv("dummy code", {
-						output: {
+						output: {	// classifier output port parms
 							scale: 0,
 							dim: 100,
 							delta: 1,
 							hits: 10,
 							cascade: ["path1", "path2"]
 						},
-						input: {
+						input: {// image input port parms
 						}
 					});
 
@@ -231,14 +231,17 @@ using the following `nodejs` code pattern below
 	Fetch(`${totem}/agent?port=${port}&keys=${Object.keys(agents)}`, agent => eval(agent));
 
 
-which listens for `add`, `cat`, `/me.js`, `dft`, `python`, `R` and `opencv` agent requests 
+which, here, listens for `add`, `cat`, `/me.js`, `dft`, `python`, `R` and `opencv` agent requests 
 on port 3333.  Here
 
-+ the last 5 agents require you pass a "$" process flag
-to make the [nodejs fs](https://nodejs.org/api/fs.html) 
-and [totem man](/github.com/totemstan/man) modules available.   
++ the last 5 agents require you pass a process arg[2] to include the 
+[nodejs fs](https://nodejs.org/api/fs.html) 
+and [totem man](/github.com/totemstan/man) modules.   
 + the last 3 agents demonstrate R-opencv-python support (assummed installed 
 on your host).
+
+If your agent requires **TOTEM**'s [full-featched Fetch](/github.com/totemstan/enums) (oauth-curl-queue-etc
+enabled), simply require( "/mnt/totem/enums" ) as well.
 
 // UNCLASSIFIED
 
