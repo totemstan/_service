@@ -185,7 +185,9 @@ jsdb_config.)
 	export URL_NEO4J=http://$KEY_NEO4J@localhost:7474
 	export URL_TXMAIL=http://$KEY_TXMAIL@smtp.comcast.net:587
 	export URL_RXMAIL=
-	export URL_LEXNEX=https:$KEY_LEXNEX//services-api.lexisnexis.com/v1/
+	# may not need key on the lexnex GETDOC url
+	export URL_LEXNEX_GETDOC=https:$KEY_LEXNEX@services-api.lexisnexis.com/v1/
+	export URL_LEXNEX_TOKEN=https:$KEY_LEXNEX@auth-api.lexisnexis.com/oauth/v2/token
 	;;
 seclink_config.)
 	export LINK_HOST=totem
