@@ -106,6 +106,14 @@ using the following `nodejs` code pattern
 
 	// revise as needed
 	const 
+		totems = {
+			RLE: "https://RLENET.126:8443",
+			WWW: "http://totem.hopto.org",
+			SBU: "https://totem.nga.mil:8443",
+			COE: "https://totem.coe.nga.mil",
+			LOCAL: "http://localhost:8080"
+		},
+		totem = totems.LOCAL,
 		port = 3333,
 		agents = {	
 			// your agents go here
@@ -123,12 +131,13 @@ using the following `nodejs` code pattern
 	Fetch(`${totem}/agent?port=${port}&keys=${Object.keys(agents)}`, agent => eval(agent));
 
 For example, to create `add`, `cat`, `/me.js`, `dft`, `python`, `R` and `opencv` agents
-that listen for requests on port 3333, we replace the `const ...;` with
+that listen for requests on port 3333, replace the `const ...;` section with
 
 	const 
 		need$ = process.argv[2] ? true : false,
 		$ = need$ ? require("./man") : null, // "/mnt/repo/man",
 		$fs = need$ ? require("fs") : null,
+		
 		totems = {
 			RLE: "https://RLENET.126:8443",
 			WWW: "http://totem.hopto.org",
@@ -247,7 +256,7 @@ and [totem man](/github.com/totemstan/man) modules.
 + the last 3 agents demonstrate R-opencv-python support (assummed installed 
 on your host).
 + if an agent required **TOTEM**'s [full-featched Fetch](/github.com/totemstan/enums) (oauth-curl-queue-etc
-enabled), we could simply add a `require( "/mnt/totem/enums" )` as well.
+enabled), simply add a `require( "/mnt/totem/[enums](/github.com/totemstan/man)" )`.
 
 ## Program Reference
 <details>
