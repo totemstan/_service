@@ -256,7 +256,7 @@ and [totem man](/github.com/totemstan/man) modules.
 + the last 3 agents demonstrate R-opencv-python support (assummed installed 
 on your host).
 + if an agent required **TOTEM**'s [full-featched Fetch](/github.com/totemstan/enums) (oauth-curl-queue-etc
-enabled), simply add a `require( "/mnt/totem/[enums](/github.com/totemstan/man)" )`.
+enabled), simply add a `require`( "/mnt/totem/[enums](/github.com/totemstan/man)" ).
 
 ## Program Reference
 <details>
