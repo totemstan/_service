@@ -16,6 +16,14 @@ INSTALL=$BASE/service/installs
 
 case "$1." in
 
+sync.)
+	cd $BASE/service
+	for mod in man enums; do
+		echo "syncing $mod"
+		rsync -av --progress ./$mod /mnt/totem/ --exclude ".git*" --exclude "_*" --exclude "package*"  --exclude "README*"
+	done
+	;;
+
 flatten.)
 	############################
 	# flatten/expand files for domain xfer
@@ -45,6 +53,7 @@ config.)
 	############################
 	# env setup
 	############################
+	cd $BASE/service
 	source ./totem/config/_pass.sh
 
 	source ./maint.sh base_config
@@ -111,7 +120,6 @@ debe_config.)
 	export SCAN=$HERE/node_modules/reader/jquery-1.7.1.min.js 	# web site scanners
 
 	export XLATE=$HERE/node_modules/i18n-abide/examples/express3/i18n	# I18N translation folder
-	export PATH=$PATH:$NODE/bin
 
 	export REPO=http://github.com/totemstan
 	export JIRA=http://jira.tbd
@@ -132,6 +140,8 @@ base_config.)
 	
 	# initialize dev/prod paths
 	export PATH=/local/bin:/usr/bin:/local/sbin:/usr/sbin:/local/cmake/bin
+	export LD_LIBRARY_PATH=
+	
 	#export GITUSER=totemstan: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
 	#export REPO=https://$GITUSER@github.com/totemstan
 
@@ -143,8 +153,9 @@ base_config.)
 	# DBs
 	export MYSQL=$BASE/mysql
 	export NEO4J=$BASE/neo4j
+	export PATH=$PATH:$MYSQL/bin
 	
-	# Apps
+	# Frameworks
 	export RED=$BASE/nodejs/lib/node_modules/node-red
 	export CESIUM=$BASE/cesium
 	export OSM=$BASE/osm
@@ -156,8 +167,8 @@ base_config.)
 	export R_libs=/usr/lib64/R/library/
 
 	# NodeJS  
-	export PATH=$PATH:$NODE/bin
 	export NODE=$BASE/nodejs
+	export PATH=$PATH:$NODE/bin
 	export NODELIB=$NODE/lib/node_modules
 	export node_path=./node_modules
 
@@ -348,29 +359,20 @@ atomic_config.)
 	# Dev paths
 	export INC=$BASE/include
 	export INCLUDE=$INC
-	export PATH=$PATH:$INC/opencv:$BASE/opencv/bin
-	export PATH=$CONDA/bin:$INC/python:$PATH
+	export PATH=$PATH:$INC/opencv:$BASE/opencv/bin:$BASE/cuda/bin:$CONDA/bin:$INC/python:$PATH
 	export REBUILD="node-gyp rebuild --nodedir=$NODE"	# use "node-gyp $GYPTOPS" to override distro ref to inet
 
-	# more dev paths
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/opencv
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/python
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/jpeg
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/R/R
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/conda
+	# frameworks
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB:$LIB/opencv:$LIB/python:$LIB/R/R:$LIB/conda
 	
-	# caffe dev paths
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/boost
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/gflags
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/glog
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/lmdb
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/leveldb
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/hdf5
+	# misc (caffe?)
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/jpeg
+	
+	# cuda 
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/cuda
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/cuDNN
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/caffe
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/protobuf
+	
+	# caffe 
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIB/boost:$LIB/gflags:$LIB/glog:$LIB/lmdb:$LIB/leveldb:$LIB/hdf5:$LIB/cuDNN:$LIB/caffe:$LIB/protobuf
 	;;
 
 opencv_install.)
