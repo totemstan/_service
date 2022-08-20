@@ -1,0 +1,38 @@
+{
+  "name": "man",
+  "version": "1.4.0",
+  "description": "matrix manipulator",
+  "main": "man.js",
+  "scripts": {
+    "verminor": "npm version minor -f",
+    "vermajor": "npm version major -f",
+    "test": "node man.js ",
+    "redoc": "jsdoc2md --template README.hbs --files man.js >README.md; git commit -am 'redoc'; git  push agent master"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "arima": "^0.2.5",
+    "edmonds-blossom": "^1.0.0",
+    "expectation-maximization": "^1.5.0",
+    "femjs": "^0.2.2",
+    "fft-js": "0.0.12",
+    "gamma": "^1.0.0",
+    "javascript-lp-solver": "^0.4.24",
+    "jimp": "^0.6.8",
+    "jsbayes": "^0.1.0",
+    "math-riemann-zeta": "^1.0.1",
+    "mathjs": "^5.10.3",
+    "modified-newton-raphson": "^1.0.2",
+    "multivariate-normal": "^0.1.2",
+    "newton-raphson": "0.0.3",
+    "node-svd": "^0.1.3",
+    "node-svm": "^2.1.9",
+    "nodehmm": "0.0.3",
+    "nodeplotlib": "^0.6.5",
+    "random-seed": "^0.3.0",
+    "riemann-zeta": "^1.0.0",
+    "simple-simplex": "^1.0.1",
+    "tsne-js": "^1.0.3"
+  }
+}
