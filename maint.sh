@@ -11,7 +11,7 @@ MODULES=DEBE_MODULES
 # MODULES=(debe totem atomic geohack ocr enums reader pipe jsdb man randpr liegroup securelink socketio)
 MODULE=`basename $HERE`
 SNAPSHOTS=/mnt/snapshots
-REPO=https://github.com/totemstan
+GITREPO=https://github.com/totemstan
 INSTALL=$BASE/service/installs
 
 case "$1." in
@@ -84,7 +84,7 @@ start.)
 	############################
 	bash maint.sh start_dbs
 	bash maint.sh start_apps
-	bash maint.sh start_docker
+	#bash maint.sh start_docker
 	;;
 
 init.)
@@ -121,7 +121,7 @@ debe_config.)
 
 	export XLATE=$HERE/node_modules/i18n-abide/examples/express3/i18n	# I18N translation folder
 
-	export REPO=http://github.com/totemstan
+	export GITREPO=$GITREPO
 	export JIRA=http://jira.tbd
 	export RAS=http://ras.tbd
 	export BY=https://research.nga.ic.gov
@@ -143,7 +143,7 @@ base_config.)
 	export LD_LIBRARY_PATH=
 	
 	#export GITUSER=totemstan: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
-	#export REPO=https://$GITUSER@github.com/totemstan
+	#export GITREPO=https://$GITUSER@github.com/totemstan
 
 	# doc and dev tools
 	#export PATH=/opt/cmake:$PATH 			# latest cmake
@@ -604,7 +604,7 @@ totem.)
 			mkdir -p $BASE/service; cd $BASE/service
 			for mod in "${TOTEM_MODULES[@]}"; do
 				echo "installing $mod"
-				git clone $REPO/$mod
+				git clone $GITREPO/$mod
 			done
 			echo "Save revised account:password keys to config/_pass.sh" 
 			vi totem/pass.sh &
@@ -645,7 +645,7 @@ debe.)
 			mkdir -p $BASE/service; cd $BASE/service
 			for mod in "${DEBE_MODULES[@]}"; do
 				echo "installing $mod"
-				git clone $REPO/$mod
+				git clone $GITREPO/$mod
 			done
 			echo "Save revised account:password keys to config/_pass.sh" 
 			vi totem/pass.sh &
@@ -1114,11 +1114,12 @@ _nodered.)
 	esac
 	;;
 
-install_docker.)
+_install_docker.)
 	mkdir -p $BASE/temp; cd $BASE/temp
 	# download and execute install script from the Docker team
 	wget -qO- https://get.docker.com/ | sh
 	# add your user to the docker group
+	sudo groupadd docker
 	sudo usermod -aG docker $(whoami)
 	# Set Docker to start automatically at boot time
 	sudo systemctl enable docker.service
@@ -1126,7 +1127,7 @@ install_docker.)
 	bash doc.sh docker start
 	;;
 
-start_docker.)
+_start_docker.)
 	# probe to expose /dev/nvidia device drivers to docker
 	# $BASE/nvidia/bin/x86_64/linux/release/deviceQuery
 
@@ -1135,7 +1136,7 @@ start_docker.)
 	docker ps -a
 	;;
 
-docker.)
+_docker.)
 	############################
 	# docker
 	# https://docker-curriculum.com/
@@ -1273,7 +1274,7 @@ git.)
 
 		genkey.) 		# make pub-pri key for git auto-password agent 
 			echo "store keys under .ssh/git_totemstan_rsa and upload git_totemstan_rsa.pub key to git account." 
-			echo "git remote add agent git@github.com:totemstan/REPO"
+			echo "git remote add agent git@github.com:totemstan/GITREPO"
 			ssh-keygen -t rsa -b 4096 -C "brian.d.james@comcast.com"
 			;;
 

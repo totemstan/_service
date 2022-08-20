@@ -1,4 +1,17 @@
 #!/bin/bash
+############################
+# docker
+# https://docker-curriculum.com/
+# https://docs.docker.com/engine/reference/commandline/build/
+# https://stackify.com/docker-build-a-beginners-guide-to-building-docker-images/
+# docker pull busybox
+# docker pull centos:7.8.2003
+# docker run -it ed6357ba5623 sh
+# python app example
+# https://docs.docker.com/compose/gettingstarted/
+# docker build -t acmesds/totem .
+# docker run -it ed6357ba5623 sh 
+############################
 
 MYSQL_USER="root"
 MYSQL_PASS="root"
@@ -28,10 +41,10 @@ case "$1_$2." in
 #
 
 totem_init.)
-	bash doc.sh os install
-	bash doc.sh mysql install
-	bash doc.sh neo4j install
-	bash doc.sh totem install
+	bash dock.sh os install
+	bash dock.sh mysql install
+	bash dock.sh neo4j install
+	bash dock.sh totem install
 
 	bash os start
 	bash mysql start
@@ -40,10 +53,10 @@ totem_init.)
 	;;
 	
 debe_init.)
-	bash doc.sh os install
-	bash doc.sh mysql install
-	bash doc.sh neo4j install
-	bash doc.sh debe install
+	bash dock.sh os install
+	bash dock.sh mysql install
+	bash dock.sh neo4j install
+	bash dock.sh debe install
 
 	bash os start
 	bash mysql start
@@ -66,8 +79,8 @@ totem_install.)
 	# get the image
 	docker pull acmesds/neo4j:latest
 	if [ "$3" != "" ]; then
-		bash doc.sh neo4j adduser $3 $4
-		bash doc.sh mysql adduser $3 $4
+		bash dock.sh neo4j adduser $3 $4
+		bash dock.sh mysql adduser $3 $4
 	fi
 	;;
 
@@ -124,9 +137,9 @@ totem_reset.)
 	# establish network for containers
 	docker network create --driver bridge totem-net
 	docker network inspect totem-net
-	bash doc.sh neo4j start $db/neo4j
-	bash doc.sh mysql start $db/mysql
-	bash doc.sh totem start $db/totem
+	bash dock.sh neo4j start $db/neo4j
+	bash dock.sh mysql start $db/mysql
+	bash dock.sh totem start $db/totem
 	;;
 
 totem_update.)
@@ -177,7 +190,7 @@ dev_start.)
 		--detach \
 		-it \
 		--volume="$(pwd)/prime:/local/prime" \
-		acmesds/dev:latest "bash doc.sh dev prime"
+		acmesds/dev:latest "bash dock.sh dev prime"
 	
 	;;
 	
@@ -256,16 +269,16 @@ debe_publish.)
 	;;
 	
 debe_build.)
-	source ./doc.sh debe_build_conda
-	source ./doc.sh debe_build_caffe
-	source ./doc.sh debe_build_cesium
-	source ./doc.sh debe_build_opencv
-	source ./doc.sh debe_build_R
+	source ./dock.sh debe_build_conda
+	source ./dock.sh debe_build_caffe
+	source ./dock.sh debe_build_cesium
+	source ./dock.sh debe_build_opencv
+	source ./dock.sh debe_build_R
 	;;
 	
 debe_build_conda.)
 	cd /local
-	bash installs/Anaconda2-2019.10-Linux-x86_64.sh -g -p /local/anaconda2-2019.10
+	bash dockerInstalls/conda-latest.sh -g -p /local/anaconda2-2019.10
 	ln -s anaconda2-2019.10 anaconda
 	#bash installs/Anaconda3-2020.11-Linux-x86_64.sh -b -p /local/anaconda3-2020.11
 	#ln -s anaconda3-2020.11 anaconda
@@ -319,7 +332,7 @@ neo4j_install.)
 	# get the image
 	docker pull acmesds/neo4j:latest
 	if [ "$3" != "" ]; then
-		bash doc.sh neo4j adduser $3 $4
+		bash dock.sh neo4j adduser $3 $4
 	fi
 	;;
 	
@@ -414,17 +427,17 @@ docker_install.)
 	# download and execute install script from the Docker team
 	wget -qO- https://get.docker.com/ | sh
 	# add your user to the docker group
+	sudo groupadd docker
 	sudo usermod -aG docker $(whoami)
-	# Set Docker to start automatically at boot time
+	# re-login then set Docker to start automatically at boot time
 	sudo systemctl enable docker.service
-	
-	bash doc.sh docker start
+	bash dock.sh docker start
 	;;
 	
 docker_start.)
 	sudo systemctl start docker.service	
 	docker images
-	bash doc.sh docker restart
+	bash dock.sh docker restart
 	;;
 
 docker_redoc.)
@@ -447,7 +460,7 @@ mysql_prime.)
 mysql_build.)
 	# save the database schema
 	if [ "$3" == "prime" ]; then
-		bash doc.sh mysql prime
+		bash dock.sh mysql prime
 	fi
 	
 	# build image
@@ -461,7 +474,7 @@ mysql_install.)
 	# get the image
 	docker pull acmesds/mysql:latest
 	if [ "$3" != "" ]; then
-		bash doc.sh mysql adduser $3 $4
+		bash dock.sh mysql adduser $3 $4
 	fi	
 	;;
 
@@ -515,18 +528,18 @@ _mysql_prime.)
 	# prime the databases
 	docker exec \
 		$MYSQL_DOCK \
-		bash doc.sh mysql dbprime 
+		bash dock.sh mysql dbprime 
 
 	# prime the databases
 	docker exec \
 		$MYSQL_DOCK \
-		bash doc.sh mysql adduser $3 $4
+		bash dock.sh mysql adduser $3 $4
 	;;
 
 *|help.)
 	echo -e \
 	"Usage:\n\n" \
-	"	bash ./doc.sh [docker | totem | debe | mysql | neo4j] [install | start | admin | debug | test]\n\n" \
+	"	bash ./dock.sh [docker | totem | debe | mysql | neo4j] [install | start | admin | debug | test]\n\n" \
 	"See https://github.com/totemstan/dockify\n"
 	;;
 	
